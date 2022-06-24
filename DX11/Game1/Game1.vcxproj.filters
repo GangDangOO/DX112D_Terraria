@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Scene1.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinNoise.h" />
+    <ClInclude Include="Map.h">
+      <Filter>GamObject</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Scene1.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinNoise.cpp" />
+    <ClCompile Include="Map.cpp">
+      <Filter>GamObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{7eeb8519-d2ec-4e95-9879-46f252c8e958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GamObject">
+      <UniqueIdentifier>{d419b750-f03e-46e2-8473-8ab91888a4ca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
