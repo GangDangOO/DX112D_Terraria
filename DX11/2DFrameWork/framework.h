@@ -110,6 +110,7 @@ extern Application App;//Extern Global
 #include "ObCircle.h"
 #include "ObLine.h"
 #include "ObImage.h"
+#include "ObTileMap.h"
 
 //Singleton Macro
 #define	D3D			Direct3D11::GetInstance()

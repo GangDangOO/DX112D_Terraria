@@ -4,16 +4,12 @@ enum Type
 	AIR,
 	WALL
 };
-struct Tile
-{
-	Type type;
-	ObRect tile;
-};
 class Map
 {
 private:
 	Int2 tileSize;
-	Tile** map;
+	Type** type;
+	bool isRectVisible;
 public:
 	Map(Int2 MapSize, unsigned int Seed);
 	~Map();
@@ -22,5 +18,6 @@ public:
 	void LateUpdate();
 	void Render();
 	void CellularAutomata();
+	bool IsThisWall(Int2 pos);
 };
 

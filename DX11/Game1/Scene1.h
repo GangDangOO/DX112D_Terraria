@@ -2,7 +2,9 @@
 class Scene1 : public Scene
 {
 private:
+	Int2 mapSize;
 	Map* map;
+	ObTileMap* block;
 public:
 	Scene1();
 	~Scene1();

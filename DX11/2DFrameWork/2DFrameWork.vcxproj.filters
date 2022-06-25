@@ -68,6 +68,9 @@
     <ClInclude Include="Dwrite.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="ObTileMap.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="Dwrite.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="ObTileMap.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

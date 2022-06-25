@@ -10,6 +10,10 @@
     <ClInclude Include="Map.h">
       <Filter>GamObject</Filter>
     </ClInclude>
+    <ClInclude Include="OpenSimplexNoise.h" />
+    <ClInclude Include="BackGround.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -19,6 +23,10 @@
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Map.cpp">
       <Filter>GamObject</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenSimplexNoise.cpp" />
+    <ClCompile Include="BackGround.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
