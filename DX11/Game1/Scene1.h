@@ -5,6 +5,8 @@ private:
 	Int2 mapSize;
 	Map* map;
 	ObTileMap* block;
+	BackGround* bg;
+	Tilebuild tb;
 public:
 	Scene1();
 	~Scene1();

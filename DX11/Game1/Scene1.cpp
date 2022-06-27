@@ -13,11 +13,12 @@ Scene1::~Scene1()
 void Scene1::Init()
 {
 	//mapSize = Int2(App.GetWidth() * 0.2, App.GetHeight() * 0.2);
-	mapSize = Int2(200, 100);
+	mapSize = Int2(200, 200);
 	unsigned int seed = RANDOM->Int(200, 350);
 	map = new Map(mapSize, seed);
 	block = new ObTileMap();
-	block->scale = Vector2(16.0f, 16.0f) * 2;
+	block->scale = Vector2(16.0f, 16.0f) / 2;
+	bg = new BackGround(Vector2(mapSize.x * block->scale.x, mapSize.y * block->scale.y));
 	block->SetWorldPos(Vector2(-(mapSize.x * block->scale.x) * 0.5, -(mapSize.y * block->scale.y) * 0.5));
 	block->ResizeTile(mapSize);
 	// 배치
@@ -34,75 +35,7 @@ void Scene1::Init()
 	// 흙 디테일
 	for (int y = 1; y < mapSize.y - 1; y++) {
 		for (int x = 1; x < mapSize.x - 1; x++) {
-			if (block->GetTileState(Int2(x, y)) == TileState::TILE_WALL) {
-				bool l = false, r = false, u = false, d = false;
-				int n = 0;
-				if (block->GetTileState(Int2(x - 1, y)) == TileState::TILE_NONE) l = true;
-				if (block->GetTileState(Int2(x + 1, y)) == TileState::TILE_NONE) r = true;
-				if (block->GetTileState(Int2(x, y - 1)) == TileState::TILE_NONE) d = true;
-				if (block->GetTileState(Int2(x, y + 1)) == TileState::TILE_NONE) u = true;
-				if (l) n = 4;
-				if (r) n = 6;
-				if (u) n = 8;
-				if (d) n = 2;
-				if (l && u) n = 7;
-				if (u && r) n = 9;
-				if (r && d) n = 3;
-				if (d && l) n = 1;
-				if (l && u && r) n = 18;
-				if (u && r && d) n = 16;
-				if (r && d && l) n = 12;
-				if (d && l && u) n = 14;
-				if (l && r && u && d) n = 5;
-				if (!l && !r && !u && !d) n = 0;
-				switch (n)
-				{
-				case 0:
-					block->SetTile(Int2(x, y), Int2(1, 1), 0, TILE_WALL);
-					break;
-				case 1:
-					block->SetTile(Int2(x, y), Int2(0, 4), 0, TILE_WALL);
-					break;
-				case 2:
-					block->SetTile(Int2(x, y), Int2(2, 2), 0, TILE_WALL);
-					break;
-				case 3:
-					block->SetTile(Int2(x, y), Int2(1, 4), 0, TILE_WALL);
-					break;
-				case 4:
-					block->SetTile(Int2(x, y), Int2(0, 1), 0, TILE_WALL);
-					break;
-				case 5:
-					block->SetTile(Int2(x, y), Int2(9, 3), 0, TILE_WALL);
-					break;
-				case 6:
-					block->SetTile(Int2(x, y), Int2(4, 1), 0, TILE_WALL);
-					break;
-				case 7:
-					block->SetTile(Int2(x, y), Int2(0, 3), 0, TILE_WALL);
-					break;
-				case 8:
-					block->SetTile(Int2(x, y), Int2(2, 0), 0, TILE_WALL);
-					break;
-				case 9:
-					block->SetTile(Int2(x, y), Int2(1, 3), 0, TILE_WALL);
-					break;
-				case 18:
-					block->SetTile(Int2(x, y), Int2(6, 0), 0, TILE_WALL);
-					break;
-				case 16:
-					block->SetTile(Int2(x, y), Int2(12, 0), 0, TILE_WALL);
-					break;
-				case 12:
-					block->SetTile(Int2(x, y), Int2(6, 3), 0, TILE_WALL);
-					break;
-				case 14:
-					block->SetTile(Int2(x, y), Int2(9, 0), 0, TILE_WALL);
-					break;
-				default:
-					break;
-				}
-			}
+			tb.TileArrangement(*block, Int2(x, y));
 		}
 	}
 }
@@ -116,6 +49,10 @@ void Scene1::Release()
 void Scene1::Update()
 {
 	ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
+	ImGui::Button("CellularAutomata");
+
+	// if(INPUT->KeyDown())
+
 	Vector2 move = Vector2(0.0, 0.0);
 	if (INPUT->KeyPress('W'))
 		move.y += 1;
@@ -127,7 +64,25 @@ void Scene1::Update()
 		move.x += 1;
 	move.Normalize();
 	CAM->position += move * DELTA * 200;
+	
+	
+	Int2 tileMousePos;
+	if (INPUT->KeyPress(VK_LBUTTON)) {
+		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
+		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
+		if (block->GetTileState(tileMousePos) == TILE_NONE) {
+			tb.TileAdd(*block, tileMousePos, TILE_WALL);
+		}
+	}
+	if (INPUT->KeyPress(VK_RBUTTON)) {
+		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
+		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
+		if (block->GetTileState(tileMousePos) == TILE_WALL) {
+			tb.TileRemove(*block, tileMousePos);
+		}
+	}
 
+	bg->Update();
 	block->Update();
 	map->Update();
 }
@@ -139,6 +94,7 @@ void Scene1::LateUpdate()
 
 void Scene1::Render()
 {
+	bg->Render();
 	block->Render();
 	map->Render();
 }

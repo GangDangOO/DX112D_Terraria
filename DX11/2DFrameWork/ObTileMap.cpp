@@ -158,6 +158,12 @@ int ObTileMap::GetTileState(Int2 TileIdx)
     return vertices[tileIdx * 6].tileState;
 }
 
+void ObTileMap::SetTileState(Int2 TileIdx, int TileState)
+{
+    int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
+    vertices[tileIdx * 6].tileState = TileState;
+}
+
 Vector2 ObTileMap::GetTilePosition(Int2 TileIdx)
 {
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;

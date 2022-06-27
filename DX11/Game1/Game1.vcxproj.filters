@@ -14,6 +14,7 @@
     <ClInclude Include="BackGround.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Tilebuild.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="BackGround.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Tilebuild.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">

@@ -6,5 +6,7 @@
 #include "OpenSimplexNoise.h"
 #include "BackGround.h"
 #include "Map.h"
+#include "Tilebuild.h"
+
 
 #include "Scene1.h"

@@ -52,6 +52,7 @@ public:
     void        SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx = 0 ,
         int TileState = TILE_NONE , Color color = Color(0.5f, 0.5f, 0.5f, 0.5f));
     int         GetTileState(Int2 TileIdx);
+    void        SetTileState(Int2 TileIdx, int TileState);
     Vector2     GetTilePosition(Int2 TileIdx);
     bool        WorldPosToTileIdx(Vector2 WPos, Int2 & TileIdx);
     void        ResizeTile(Int2 TileSize);

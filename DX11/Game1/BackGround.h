@@ -2,9 +2,9 @@
 class BackGround
 {
 private:
-
+	ObImage* sky;
 public:
-	BackGround();
+	BackGround(Vector2 size);
 	~BackGround();
 	void Update();
 	void Render();
