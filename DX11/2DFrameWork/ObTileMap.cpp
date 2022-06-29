@@ -36,7 +36,8 @@ ObTileMap::ObTileMap()
     tileImages[0]->maxFrame = Int2(13, 5);
     tileImages[1] = new ObImage(L"Air.png");
     tileImages[1]->maxFrame = Int2(1, 1);
-    tileImages[2] = nullptr;
+    tileImages[2] = new ObImage(L"Tiles_1.png");
+    tileImages[2]->maxFrame = Int2(14, 7);
     tileImages[3] = nullptr;
 
     //¼¼·Î

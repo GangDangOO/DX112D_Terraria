@@ -24,18 +24,27 @@ void Scene1::Init()
 	//// 배치
 	for (int y = 0; y < mapSize.y; y++) {
 		for (int x = 0; x < mapSize.x; x++) {
-			if (!map->IsThisWall(Int2(x, y))) {
-				block->SetTile(Int2(x, y), Int2(1, 1), 1, TILE_NONE);
+			switch (map->GetType(Int2(x, y)))
+			{
+			case AIR:
+				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE);
+				break;
+			case DIRT:
+				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL);
+				break;
+			case ROCK:
+				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL);
+				break;
+			default:
+				break;
 			}
-			else {
-				block->SetTile(Int2(x, y), Int2(1, 1), 0, TILE_WALL);
-			}
+			
 		}
 	}
 	// 흙 디테일
 	for (int y = 1; y < mapSize.y - 1; y++) {
 		for (int x = 1; x < mapSize.x - 1; x++) {
-			tb.TileArrangement(*block, Int2(x, y));
+			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)));
 		}
 	}
 	block->UpdateSub();
@@ -50,7 +59,6 @@ void Scene1::Release()
 void Scene1::Update()
 {
 	ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
-	ImGui::Button("CellularAutomata");
 
 	// if(INPUT->KeyDown())
 
@@ -72,7 +80,7 @@ void Scene1::Update()
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
 		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 		if (block->GetTileState(tileMousePos) == TILE_NONE) {
-			tb.TileAdd(*block, tileMousePos, TILE_WALL);
+			tb.TileAdd(*block, tileMousePos, *map);
 			block->UpdateSub();
 		}
 	}
@@ -80,7 +88,7 @@ void Scene1::Update()
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
 		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 		if (block->GetTileState(tileMousePos) == TILE_WALL) {
-			tb.TileRemove(*block, tileMousePos);
+			tb.TileRemove(*block, tileMousePos, *map);
 			block->UpdateSub();
 		}
 	}

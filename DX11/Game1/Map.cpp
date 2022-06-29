@@ -14,7 +14,7 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 				double x = (double)j / ((double)tileSize.x);
 				double y = (double)i / ((double)tileSize.y);
 
-				double n = pn.noise(x / 32, y / 32, 1.0);
+				double n = pn.noise(x * 500, y * 100, 0.7);
 
 				if (n > 0.5f) {
 					type[i][j] = AIR;
@@ -29,6 +29,20 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 				}
 				else {
 					type[i][j] = DIRT;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < tileSize.y; ++i) {
+		for (int j = 0; j < tileSize.x; ++j) {
+			if (i < tileSize.y * 0.65) {
+				double x = (double)j / ((double)tileSize.x);
+				double y = (double)i / ((double)tileSize.y);
+
+				double n = pn.noise(x * 500, y * 300, 0.7);
+
+				if (n > 0.3f && type[i][j] == DIRT) {
+					type[i][j] = ROCK;
 				}
 			}
 		}
@@ -89,7 +103,7 @@ void Map::CellularAutomata()
 	}
 }
 
-bool Map::IsThisWall(Int2 pos)
+byte Map::GetType(Int2 pos)
 {
-	return type[pos.y][pos.x] == Type::DIRT;
+	return type[pos.y][pos.x];
 }

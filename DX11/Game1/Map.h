@@ -1,8 +1,9 @@
 #pragma once
 enum Type
 {
+	DIRT,
 	AIR,
-	DIRT
+	ROCK
 };
 class Map
 {
@@ -18,6 +19,6 @@ public:
 	void LateUpdate();
 	void Render();
 	void CellularAutomata();
-	bool IsThisWall(Int2 pos);
+	byte GetType(Int2 pos);
 };
 
