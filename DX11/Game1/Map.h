@@ -2,13 +2,13 @@
 enum Type
 {
 	AIR,
-	WALL
+	DIRT
 };
 class Map
 {
 private:
 	Int2 tileSize;
-	Type** type;
+	byte** type;
 	bool isRectVisible;
 public:
 	Map(Int2 MapSize, unsigned int Seed);

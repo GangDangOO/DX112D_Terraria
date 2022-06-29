@@ -146,8 +146,10 @@ void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, int TileState, 
         vertices[tileIdx * 6 + i].color = color;
         vertices[tileIdx * 6 + i].tileState = TileState;
     }
-    
-    
+}
+
+void ObTileMap::UpdateSub()
+{
     D3D->GetDC()->UpdateSubresource
     (vertexBuffer, 0, NULL, vertices, 0, 0);
 }
