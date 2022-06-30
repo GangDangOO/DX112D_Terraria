@@ -7,6 +7,7 @@ private:
 	ObTileMap* block;
 	BackGround* bg;
 	Tilebuild tb;
+	byte		addBlockType;
 public:
 	Scene1();
 	~Scene1();

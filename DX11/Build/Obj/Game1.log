@@ -1,3 +1,5 @@
-﻿  Map.cpp
+﻿  Scene1.cpp
+D:\one_month\DX11\Game1\Scene1.cpp(22,96): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\one_month\DX11\Game1\Scene1.cpp(22,59): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      D:\one_month\DX11\\Build\Game1.lib 라이브러리 및 D:\one_month\DX11\\Build\Game1.exp 개체를 생성하고 있습니다.
   Game1.vcxproj -> D:\one_month\DX11\Build\Game1.exe

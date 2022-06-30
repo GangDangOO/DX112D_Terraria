@@ -44,10 +44,11 @@ void Scene1::Init()
 	// 흙 디테일
 	for (int y = 1; y < mapSize.y - 1; y++) {
 		for (int x = 1; x < mapSize.x - 1; x++) {
-			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)));
+			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)), *map);
 		}
 	}
 	block->UpdateSub();
+	addBlockType = DIRT;
 }
 
 void Scene1::Release()
@@ -59,9 +60,8 @@ void Scene1::Release()
 void Scene1::Update()
 {
 	ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
-
-	// if(INPUT->KeyDown())
-
+	
+	// 카메라 움직임
 	Vector2 move = Vector2(0.0, 0.0);
 	if (INPUT->KeyPress('W'))
 		move.y += 1;
@@ -74,13 +74,20 @@ void Scene1::Update()
 	move.Normalize();
 	CAM->position += move * DELTA * 500;
 	
+	// 설치블럭변경
+	if (INPUT->KeyPress('1')) {
+		addBlockType = DIRT;
+	}
+	if (INPUT->KeyPress('2')) {
+		addBlockType = ROCK;
+	}
 	
 	Int2 tileMousePos;
 	if (INPUT->KeyPress(VK_LBUTTON)) {
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
 		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 		if (block->GetTileState(tileMousePos) == TILE_NONE) {
-			tb.TileAdd(*block, tileMousePos, *map);
+			tb.TileAdd(*block, tileMousePos, *map, addBlockType);
 			block->UpdateSub();
 		}
 	}

@@ -3,51 +3,77 @@
 void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map)
 {
 	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE);
-	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)));
-	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)));
-	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)));
-	TileArrangement(block, Int2(tilePos.x, tilePos.y + 1), map.GetType(Int2(tilePos.x, tilePos.y + 1)));
+	map.SetType(tilePos, AIR);
+	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map);
+	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map);
+	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)), map);
+	TileArrangement(block, Int2(tilePos.x, tilePos.y + 1), map.GetType(Int2(tilePos.x, tilePos.y + 1)), map);
 }
 
-void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map)
+void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type)
 {
 	block.SetTileState(tilePos, TILE_WALL);
-	TileArrangement(block, Int2(tilePos.x, tilePos.y), map.GetType(tilePos));
-	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)));
-	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)));
-	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)));
-	TileArrangement(block, Int2(tilePos.x, tilePos.y + 1), map.GetType(Int2(tilePos.x, tilePos.y + 1)));
+	map.SetType(tilePos, type);
+	TileArrangement(block, Int2(tilePos.x, tilePos.y), map.GetType(tilePos), map);
+	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map);
+	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map);
+	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)), map);
+	TileArrangement(block, Int2(tilePos.x, tilePos.y + 1), map.GetType(Int2(tilePos.x, tilePos.y + 1)), map);
 }
 
-void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type)
+void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map)
 {
 	if (block.GetTileState(pos) == TileState::TILE_WALL) {
 		bool l = false, r = false, u = false, d = false;
 		int n = 0;
-		if (block.GetTileState(Int2(pos.x - 1, pos.y)) == TileState::TILE_NONE) l = true;
-		if (block.GetTileState(Int2(pos.x + 1, pos.y)) == TileState::TILE_NONE) r = true;
-		if (block.GetTileState(Int2(pos.x, pos.y - 1)) == TileState::TILE_NONE) d = true;
-		if (block.GetTileState(Int2(pos.x, pos.y + 1)) == TileState::TILE_NONE) u = true;
-		if (l) n = 4;
-		if (r) n = 6;
-		if (u) n = 8;
-		if (d) n = 2;
-		if (l && u) n = 7;
-		if (u && r) n = 9;
-		if (r && d) n = 3;
-		if (d && l) n = 1;
-		if (l && r) n = 46;
-		if (u && d) n = 28;
-		if (l && u && r) n = 18;
-		if (u && r && d) n = 16;
-		if (r && d && l) n = 12;
-		if (d && l && u) n = 14;
-		if (l && r && u && d) n = 5;
+		if (block.GetTileState(Int2(pos.x - 1, pos.y)) == TILE_NONE) l = true;
+		if (block.GetTileState(Int2(pos.x + 1, pos.y)) == TILE_NONE) r = true;
+		if (block.GetTileState(Int2(pos.x, pos.y - 1)) == TILE_NONE) d = true;
+		if (block.GetTileState(Int2(pos.x, pos.y + 1)) == TILE_NONE) u = true;
 		if (!l && !r && !u && !d) n = 0;
+		else if (l && r && u && d) n = 5;
+		else if (d && l && u) n = 14;
+		else if (r && d && l) n = 12;
+		else if (u && r && d) n = 16;
+		else if (l && u && r) n = 18;
+		else if (u && d) n = 28;
+		else if (l && r) n = 46;
+		else if (d && l) n = 1;
+		else if (r && d) n = 3;
+		else if (u && r) n = 9;
+		else if (l && u) n = 7;
+		else if (d) n = 2;
+		else if (u) n = 8;
+		else if (r) n = 6;
+		else if (l) n = 4;
 		switch (n)
 		{
 		case 0:
-			block.SetTile(pos, Int2(1, 1), type, TILE_WALL);
+			if (map.GetType(pos) == ROCK) {
+				l = r = d = u = false;
+				if (map.GetType(Int2(pos.x - 1, pos.y)) == DIRT) l = true;
+				if (map.GetType(Int2(pos.x + 1, pos.y)) == DIRT) r = true;
+				if (map.GetType(Int2(pos.x, pos.y - 1)) == DIRT) d = true;
+				if (map.GetType(Int2(pos.x, pos.y + 1)) == DIRT) u = true;
+				if (l && r && d && u) block.SetTile(pos, Int2(6, 11), type, TILE_WALL);
+				else if (!l && !r && !d && !u) block.SetTile(pos, Int2(1, 1), type, TILE_WALL);
+				else if (l && u && r) block.SetTile(pos, Int2(11, 5), type, TILE_WALL);
+				else if (l && d && r) block.SetTile(pos, Int2(11, 8), type, TILE_WALL);
+				else if (l && u && d) block.SetTile(pos, Int2(12, 5), type, TILE_WALL);
+				else if (r && u && d) block.SetTile(pos, Int2(12, 8), type, TILE_WALL);
+				else if (l && r) block.SetTile(pos, Int2(11, 7), type, TILE_WALL);
+				else if (u && d) block.SetTile(pos, Int2(9, 10), type, TILE_WALL);
+				else if (l && u) block.SetTile(pos, Int2(2, 5), type, TILE_WALL);
+				else if (u && r) block.SetTile(pos, Int2(3, 5), type, TILE_WALL);
+				else if (r && d) block.SetTile(pos, Int2(3, 6), type, TILE_WALL);
+				else if (d && l) block.SetTile(pos, Int2(2, 6), type, TILE_WALL);
+				else if (l) block.SetTile(pos, Int2(9, 7), type, TILE_WALL);
+				else if (r) block.SetTile(pos, Int2(8, 7), type, TILE_WALL);
+				else if (u) block.SetTile(pos, Int2(8, 6), type, TILE_WALL);
+				else if (d) block.SetTile(pos, Int2(8, 5), type, TILE_WALL);
+			}
+			else
+				block.SetTile(pos, Int2(1, 1), type, TILE_WALL);
 			break;
 		case 1:
 			block.SetTile(pos, Int2(0, 4), type, TILE_WALL);

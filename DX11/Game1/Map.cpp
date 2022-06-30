@@ -103,6 +103,11 @@ void Map::CellularAutomata()
 	}
 }
 
+void Map::SetType(Int2 pos, byte _type)
+{
+	type[pos.y][pos.x] = _type;
+}
+
 byte Map::GetType(Int2 pos)
 {
 	return type[pos.y][pos.x];

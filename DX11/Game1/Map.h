@@ -19,6 +19,7 @@ public:
 	void LateUpdate();
 	void Render();
 	void CellularAutomata();
+	void SetType(Int2 pos, byte _type);
 	byte GetType(Int2 pos);
 };
 
