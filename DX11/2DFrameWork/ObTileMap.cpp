@@ -38,7 +38,12 @@ ObTileMap::ObTileMap()
     tileImages[1]->maxFrame = Int2(1, 1);
     tileImages[2] = new ObImage(L"Tiles_1.png");
     tileImages[2]->maxFrame = Int2(16, 15);
-    tileImages[3] = nullptr;
+    tileImages[3] = new ObImage(L"Tiles_2.png");
+    tileImages[3]->maxFrame = Int2(17, 15);
+    tileImages[4] = new ObImage(L"Tiles_3.png");
+    tileImages[4]->maxFrame = Int2(45, 1);
+    tileImages[5] = new ObImage(L"Tiles_4.png");
+    tileImages[5]->maxFrame = Int2(3, 1);
 
     //¼¼·Î
     for (int i = 0; i < tileSize.y; i++)
@@ -93,7 +98,7 @@ ObTileMap::~ObTileMap()
 {
     SafeRelease(vertexBuffer);
     SafeDeleteArray(vertices);
-    for (int i=0; i<4; i++)
+    for (int i=0; i<5; i++)
         SafeDelete(tileImages[i]);
 }
 
@@ -102,7 +107,7 @@ void ObTileMap::Render()
     if (!visible)return;
     GameObject::Render();
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < imageIdx; i++)
     {
         if (tileImages[i])
         {
@@ -268,7 +273,7 @@ void ObTileMap::Save()
     fout.open(path.c_str(), ios::out);
     if (fout.is_open())
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < imageIdx; i++)
         {
             fout << i << " ";
             if (tileImages[i])
@@ -313,7 +318,7 @@ void ObTileMap::Load()
     string temp;
     if (fin.is_open())
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < imageIdx; i++)
         {
             SafeDelete(tileImages[i]);
             int idx; string Imgfile;

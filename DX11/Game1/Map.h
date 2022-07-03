@@ -3,7 +3,10 @@ enum Type
 {
 	DIRT,
 	AIR,
-	ROCK
+	ROCK,
+	GRASS,
+	FLOWER,
+	TOUCH
 };
 class Map
 {

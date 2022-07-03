@@ -45,6 +45,9 @@ void Scene1::Init()
 	for (int y = 1; y < mapSize.y - 1; y++) {
 		for (int x = 1; x < mapSize.x - 1; x++) {
 			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)), *map);
+			if (y > mapSize.y * 0.64 && map->GetType(Int2(x, y)) == DIRT) {
+				tb.DirtToGrass(*block, Int2(x, y));
+			}
 		}
 	}
 	block->UpdateSub();
@@ -80,6 +83,9 @@ void Scene1::Update()
 	}
 	if (INPUT->KeyPress('2')) {
 		addBlockType = ROCK;
+	}
+	if (INPUT->KeyPress('3')) {
+		addBlockType = TOUCH;
 	}
 	
 	Int2 tileMousePos;

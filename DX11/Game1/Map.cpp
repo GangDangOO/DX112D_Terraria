@@ -10,7 +10,7 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 	}
 	for (int i = 0; i < tileSize.y; ++i) {
 		for (int j = 0; j < tileSize.x; ++j) {
-			if (i < tileSize.y * 0.66) {
+			if (i < tileSize.y * 0.68) {
 				double x = (double)j / ((double)tileSize.x);
 				double y = (double)i / ((double)tileSize.y);
 
@@ -24,11 +24,20 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 				}
 			}
 			else {
-				if (i > tileSize.y * 0.68) {
+				if (i > tileSize.y * 0.7) {
 					type[i][j] = AIR;
 				}
 				else {
-					type[i][j] = DIRT;
+					double x = (double)j / ((double)tileSize.x);
+					double y = (double)i / ((double)tileSize.y);
+
+					double n = pn.noise(x * 150, y * 35, 0.8);
+					if (n > 0.6) {
+						type[i][j] = AIR;
+					}
+					else {
+						type[i][j] = DIRT;
+					}
 				}
 			}
 		}
@@ -48,6 +57,7 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 		}
 	}
 	isRectVisible = false;
+	CellularAutomata();
 	CellularAutomata();
 	CellularAutomata();
 }

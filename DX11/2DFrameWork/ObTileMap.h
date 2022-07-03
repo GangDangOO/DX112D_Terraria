@@ -1,5 +1,5 @@
 #pragma once
-
+#define imageIdx 6
 class Tile
 {
 public:
@@ -40,7 +40,7 @@ private:
     Int2                    tileSize;   //10x10 , 4x4
     vector<vector<Tile>>    Tiles;
 public:
-    ObImage *               tileImages[4];
+    ObImage *               tileImages[imageIdx];
     string                  file;
 
 public:
