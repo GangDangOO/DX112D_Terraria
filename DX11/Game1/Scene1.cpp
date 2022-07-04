@@ -27,13 +27,13 @@ void Scene1::Init()
 			switch (map->GetType(Int2(x, y)))
 			{
 			case AIR:
-				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE, Color(0.5, 0.5, 0.5));
+				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE);
 				break;
 			case DIRT:
-				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL, Color(0.0, 0.0, 0.0));
+				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL);
 				break;
 			case ROCK:
-				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL, Color(0.0, 0.0, 0.0));
+				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL);
 				break;
 			default:
 				break;
@@ -91,18 +91,24 @@ void Scene1::Update()
 	Int2 tileMousePos;
 	if (INPUT->KeyPress(VK_LBUTTON)) {
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
-		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
-		if (block->GetTileState(tileMousePos) == TILE_NONE) {
-			tb.TileAdd(*block, tileMousePos, *map, addBlockType);
-			block->UpdateSub();
+		if (tileMousePos.x > 0 && tileMousePos.x < mapSize.x &&
+			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
+			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
+			if (block->GetTileState(tileMousePos) == TILE_NONE) {
+				tb.TileAdd(*block, tileMousePos, *map, addBlockType);
+				block->UpdateSub();
+			}
 		}
 	}
 	if (INPUT->KeyPress(VK_RBUTTON)) {
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
-		cout << tileMousePos.x << " : " << tileMousePos.y << endl;
-		if (block->GetTileState(tileMousePos) == TILE_WALL) {
-			tb.TileRemove(*block, tileMousePos, *map);
-			block->UpdateSub();
+		if (tileMousePos.x > 0 && tileMousePos.x < mapSize.x &&
+			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
+			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
+			if (block->GetTileState(tileMousePos) == TILE_WALL) {
+				tb.TileRemove(*block, tileMousePos, *map);
+				block->UpdateSub();
+			}
 		}
 	}
 

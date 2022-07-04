@@ -29,7 +29,8 @@ struct compare
 enum TileState
 {
     TILE_NONE,
-    TILE_WALL
+    TILE_WALL,
+    TILE_PLATFORM
 };
 
 class ObTileMap : public GameObject
@@ -50,7 +51,7 @@ public:
 
     void        Render()override;
     void        SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx = 0 ,
-        int TileState = TILE_NONE , Color color = Color(0.5f, 0.5f, 0.5f, 0.5f));
+        byte TileState = TILE_NONE , Color color = Color(0.5f, 0.5f, 0.5f, 0.5f));
     void        UpdateSub();
     int         GetTileState(Int2 TileIdx);
     void        SetTileState(Int2 TileIdx, int TileState);

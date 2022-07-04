@@ -7,6 +7,6 @@
 #include "BackGround.h"
 #include "Map.h"
 #include "Tilebuild.h"
-
+#include "MapLight.h"
 
 #include "Scene1.h"

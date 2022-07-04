@@ -31,7 +31,7 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 					double x = (double)j / ((double)tileSize.x);
 					double y = (double)i / ((double)tileSize.y);
 
-					double n = pn.noise(x * 150, y * 35, 0.8);
+					double n = pn.noise(x * 200, y * 60, 0.8);
 					if (n > 0.6) {
 						type[i][j] = AIR;
 					}

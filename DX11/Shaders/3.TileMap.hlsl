@@ -72,6 +72,11 @@ SamplerState Sampler2 : register(s2);
 Texture2D Texture3 : register(t3);
 SamplerState Sampler3 : register(s3);
 
+Texture2D Texture4 : register(t4);
+SamplerState Sampler4 : register(s4);
+
+Texture2D Texture5 : register(t5);
+SamplerState Sampler5 : register(s5);
 
 //픽셀쉐이더 진입 함수
 float4 PS(PixelInput input) : SV_TARGET //SV_TARGET 은 타겟이될 색깔 
@@ -96,7 +101,14 @@ float4 PS(PixelInput input) : SV_TARGET //SV_TARGET 은 타겟이될 색깔
     {
         TextureColor = Texture3.Sample(Sampler3, input.uv);
     }
-    
+    else if (input.tileMapIdx == 4.0f)
+    {
+        TextureColor = Texture4.Sample(Sampler4, input.uv);
+    }
+    else if (input.tileMapIdx == 5.0f)
+    {
+        TextureColor = Texture5.Sample(Sampler5, input.uv);
+    }
     
     //읽어온 그림파일의 픽셀색상을 조건문으로 비교
     [flatten]

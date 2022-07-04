@@ -39,7 +39,7 @@ ObTileMap::ObTileMap()
     tileImages[2] = new ObImage(L"Tiles_1.png");
     tileImages[2]->maxFrame = Int2(16, 15);
     tileImages[3] = new ObImage(L"Tiles_2.png");
-    tileImages[3]->maxFrame = Int2(17, 15);
+    tileImages[3]->maxFrame = Int2(16, 15);
     tileImages[4] = new ObImage(L"Tiles_3.png");
     tileImages[4]->maxFrame = Int2(45, 1);
     tileImages[5] = new ObImage(L"Tiles_4.png");
@@ -126,7 +126,7 @@ void ObTileMap::Render()
     D3D->GetDC()->Draw(tileSize.x * tileSize.y * 6, 0);
 }
 
-void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, int TileState, Color color)
+void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, byte TileState, Color color)
 {
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
     vertices[tileIdx * 6 + 0].uv.x = FrameIdx.x / (float)tileImages[ImgIdx]->maxFrame.x;
