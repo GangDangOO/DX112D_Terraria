@@ -27,13 +27,13 @@ void Scene1::Init()
 			switch (map->GetType(Int2(x, y)))
 			{
 			case AIR:
-				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE);
+				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE, Color(0.5, 0.5, 0.5));
 				break;
 			case DIRT:
-				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL);
+				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL, Color(0.0, 0.0, 0.0));
 				break;
 			case ROCK:
-				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL);
+				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL, Color(0.0, 0.0, 0.0));
 				break;
 			default:
 				break;

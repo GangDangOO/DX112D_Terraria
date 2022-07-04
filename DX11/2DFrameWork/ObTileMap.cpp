@@ -98,7 +98,7 @@ ObTileMap::~ObTileMap()
 {
     SafeRelease(vertexBuffer);
     SafeDeleteArray(vertices);
-    for (int i=0; i<5; i++)
+    for (int i=0; i< imageIdx; i++)
         SafeDelete(tileImages[i]);
 }
 
