@@ -16,48 +16,65 @@ void Scene1::Init()
 	mapSize = Int2(1000, 400);
 	unsigned int seed = RANDOM->Int(200, 350);
 	map = new Map(mapSize, seed);
+	mapLight = new MapLight(mapSize);
 	block = new ObTileMap();
+	wall = new ObTileMap();
+	mapWall = new MapWall(mapSize);
 	block->scale = Vector2(16.0f, 16.0f);
+	wall->scale = Vector2(16.0f, 16.0f);
 	bg = new BackGround(Vector2(mapSize.x * block->scale.x, mapSize.y * block->scale.y));
 	block->SetWorldPos(Vector2(-(mapSize.x * block->scale.x) * 0.5, -(mapSize.y * block->scale.y) * 0.5));
 	block->ResizeTile(mapSize);
+	wall->SetWorldPos(Vector2(-(mapSize.x * wall->scale.x) * 0.5, -(mapSize.y * wall->scale.y) * 0.5));
+	wall->ResizeTile(mapSize);
+	mapLight->CalcLight(map, mapWall->isWall);
 	//// 배치
 	for (int y = 0; y < mapSize.y; y++) {
 		for (int x = 0; x < mapSize.x; x++) {
+			float light = mapLight->GetLightPower(Int2(x, y)) * 0.1f;
 			switch (map->GetType(Int2(x, y)))
 			{
 			case AIR:
-				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE);
+				block->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE, Color(light, light, light));
 				break;
 			case DIRT:
-				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL);
+				block->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_WALL, Color(light, light, light));
 				break;
 			case ROCK:
-				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL);
+				block->SetTile(Int2(x, y), Int2(1, 1), ROCK, TILE_WALL, Color(light, light, light));
 				break;
 			default:
 				break;
 			}
-			
+			if (mapWall->isWall[y][x] == true) {
+				wall->SetTile(Int2(x, y), Int2(1, 1), DIRT, TILE_NONE, Color(light, light, light));
+			}
+			else {
+				wall->SetTile(Int2(x, y), Int2(1, 1), AIR, TILE_NONE, Color(light, light, light));
+			}
 		}
 	}
-	// 흙 디테일
+	// 블럭 디테일
 	for (int y = 1; y < mapSize.y - 1; y++) {
 		for (int x = 1; x < mapSize.x - 1; x++) {
-			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)), *map);
+			float light = mapLight->GetLightPower(Int2(x, y)) * 0.1f;
+			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)), *map, mapLight->lightPower);
 			if (y > mapSize.y * 0.64 && map->GetType(Int2(x, y)) == DIRT) {
-				tb.DirtToGrass(*block, Int2(x, y));
+				tb.DirtToGrass(*block, Int2(x, y), mapLight->lightPower);
 			}
 		}
 	}
 	block->UpdateSub();
+	wall->UpdateSub();
 	addBlockType = DIRT;
 }
 
 void Scene1::Release()
 {
 	map->Release();
+	SafeDelete(mapLight);
 	SafeDelete(block);
+	SafeDelete(wall);
 }
 
 void Scene1::Update()
@@ -95,7 +112,8 @@ void Scene1::Update()
 			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
 			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 			if (block->GetTileState(tileMousePos) == TILE_NONE) {
-				tb.TileAdd(*block, tileMousePos, *map, addBlockType);
+				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.1f;
+				tb.TileAdd(*block, tileMousePos, *map, addBlockType, mapLight->lightPower);
 				block->UpdateSub();
 			}
 		}
@@ -106,15 +124,16 @@ void Scene1::Update()
 			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
 			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 			if (block->GetTileState(tileMousePos) == TILE_WALL) {
-				tb.TileRemove(*block, tileMousePos, *map);
+				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.1f;
+				tb.TileRemove(*block, tileMousePos, *map, mapLight->lightPower);
 				block->UpdateSub();
 			}
 		}
 	}
 
 	bg->Update();
+	wall->Update();
 	block->Update();
-	map->Update();
 }
 
 void Scene1::LateUpdate()
@@ -125,8 +144,8 @@ void Scene1::LateUpdate()
 void Scene1::Render()
 {
 	bg->Render();
+	wall->Render();
 	block->Render();
-	map->Render();
 }
 
 void Scene1::ResizeScreen()

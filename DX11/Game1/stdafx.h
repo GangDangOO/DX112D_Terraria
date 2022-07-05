@@ -8,5 +8,6 @@
 #include "Map.h"
 #include "Tilebuild.h"
 #include "MapLight.h"
+#include "MapWall.h"
 
 #include "Scene1.h"

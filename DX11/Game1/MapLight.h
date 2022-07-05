@@ -3,10 +3,11 @@ class MapLight
 {
 private:
 	Int2   mapSize;
-	byte** lightPower;
 public:
+	byte** lightPower;
 	MapLight(Int2 mapSize);
 	~MapLight();
-	void CalcLight(Map* map, ObTileMap* tile);
+	void CalcLight(Map* map, bool** wall);
+	byte GetLightPower(Int2 pos);
 };
 

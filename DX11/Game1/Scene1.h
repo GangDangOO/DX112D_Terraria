@@ -5,6 +5,9 @@ private:
 	Int2 mapSize;
 	Map* map;
 	ObTileMap* block;
+	ObTileMap* wall;
+	MapWall* mapWall;
+	MapLight* mapLight;
 	BackGround* bg;
 	Tilebuild tb;
 	byte		addBlockType;

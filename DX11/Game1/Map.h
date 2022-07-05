@@ -6,7 +6,8 @@ enum Type
 	ROCK,
 	GRASS,
 	FLOWER,
-	TOUCH
+	TOUCH,
+	WALL
 };
 class Map
 {
