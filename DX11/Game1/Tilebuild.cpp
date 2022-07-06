@@ -98,11 +98,16 @@ void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, byte** mapLight)
 	}
 }
 
-void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapLight)
+void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapLight, bool** wall)
 {
-	float light = mapLight[tilePos.y][tilePos.x] * 0.05f;
-	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE, Color(light, light, light));
+	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE);
 	map.SetType(tilePos, AIR);
+	if (wall[tilePos.y][tilePos.x] == false)
+		mapLight[tilePos.y][tilePos.x] = 10;
+	else
+		mapLight[tilePos.y][tilePos.x] = 0;
+	float light = mapLight[tilePos.y][tilePos.x] * 0.05f;
+	block.SetLight(tilePos, mapLight[tilePos.y][tilePos.x]);
 	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)), map, mapLight);
@@ -117,6 +122,7 @@ void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, byt
 		if (mapLight[tilePos.y][tilePos.x] < 10) mapLight[tilePos.y][tilePos.x] = 10;
 	}
 	else {
+		mapLight[tilePos.y][tilePos.x] = 0;
 		block.SetTileState(tilePos, TILE_WALL);
 		map.SetType(tilePos, type);
 		TileArrangement(block, Int2(tilePos.x, tilePos.y), map.GetType(tilePos), map, mapLight);

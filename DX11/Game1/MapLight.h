@@ -10,4 +10,5 @@ public:
 	void CalcLight(Map* map, bool** wall, ObTileMap* block, ObTileMap* wallM);
 	byte GetLightPower(Int2 pos);
 	void SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall);
+	void RemoveLight(Int2 pos, ObTileMap* block, ObTileMap* wall);
 };

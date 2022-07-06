@@ -12,6 +12,7 @@ Scene1::~Scene1()
 
 void Scene1::Init()
 {
+	CAM->position.y += App.GetHeight() + 400;
 	//mapSize = Int2(App.GetWidth() * 0.2, App.GetHeight() * 0.2);
 	mapSize = Int2(1000, 400);
 	unsigned int seed = RANDOM->Int(200, 350);
@@ -114,7 +115,17 @@ void Scene1::Update()
 			if (block->GetTileState(tileMousePos) == TILE_NONE) {
 				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.05f;
 				tb.TileAdd(*block, tileMousePos, *map, addBlockType, mapLight->lightPower);
-				mapLight->SpreadLight(tileMousePos, block, wall);
+				for (int i = tileMousePos.y - 4; i < tileMousePos.y + 4; i++) {
+					for (int j = tileMousePos.x - 5; j < tileMousePos.x + 5; j++) {
+						if ((int)mapLight->lightPower[i][j] != 10)
+							mapLight->RemoveLight(Int2(j, i), block, wall);
+					}
+				}
+				for (int i = tileMousePos.y - 5; i < tileMousePos.y + 5; i++) {
+					for (int j = tileMousePos.x - 5; j < tileMousePos.x + 5; j++) {
+						mapLight->SpreadLight(Int2(j, i), block, wall);
+					}
+				}
 				block->UpdateSub();
 				wall->UpdateSub();
 			}
@@ -127,7 +138,18 @@ void Scene1::Update()
 			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 			if (block->GetTileState(tileMousePos) == TILE_WALL) {
 				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.05f;
-				tb.TileRemove(*block, tileMousePos, *map, mapLight->lightPower);
+				tb.TileRemove(*block, tileMousePos, *map, mapLight->lightPower, mapWall->isWall);
+				for (int i = tileMousePos.y - 4; i < tileMousePos.y + 4; i++) {
+					for (int j = tileMousePos.x - 5; j < tileMousePos.x + 5; j++) {
+						if ((int)mapLight->lightPower[i][j] != 10)
+							mapLight->RemoveLight(Int2(j, i), block, wall);
+					}
+				}
+				for (int i = tileMousePos.y - 5; i < tileMousePos.y + 5; i++) {
+					for (int j = tileMousePos.x - 5; j < tileMousePos.x + 5; j++) {
+						mapLight->SpreadLight(Int2(j, i), block, wall);
+					}
+				}
 				block->UpdateSub();
 				wall->UpdateSub();
 			}

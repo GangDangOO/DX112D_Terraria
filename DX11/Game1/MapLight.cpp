@@ -89,3 +89,10 @@ void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
 			SpreadLight(Int2(pos.x + 1, pos.y), block, wall);
 	}
 }
+
+void MapLight::RemoveLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
+{
+	lightPower[pos.y][pos.x] = 0;
+	block->SetLight(pos, lightPower[pos.y][pos.x]);
+	wall->SetLight(pos, lightPower[pos.y][pos.x]);
+}
