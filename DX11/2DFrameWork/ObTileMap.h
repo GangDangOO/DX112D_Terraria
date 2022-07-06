@@ -38,9 +38,9 @@ class ObTileMap : public GameObject
 private:
     VertexTile*             vertices;
     ID3D11Buffer *          vertexBuffer;
-    Int2                    tileSize;   //10x10 , 4x4
     vector<vector<Tile>>    Tiles;
 public:
+    Int2                    tileSize;   //10x10 , 4x4
     ObImage *               tileImages[imageIdx];
     string                  file;
 
@@ -52,6 +52,7 @@ public:
     void        Render()override;
     void        SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx = 0 ,
         byte TileState = TILE_NONE , Color color = Color(0.5f, 0.5f, 0.5f, 0.5f));
+    void        SetLight(Int2 TileIdx, byte light);
     void        UpdateSub();
     int         GetTileState(Int2 TileIdx);
     void        SetTileState(Int2 TileIdx, int TileState);

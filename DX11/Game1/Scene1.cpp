@@ -27,11 +27,11 @@ void Scene1::Init()
 	block->ResizeTile(mapSize);
 	wall->SetWorldPos(Vector2(-(mapSize.x * wall->scale.x) * 0.5, -(mapSize.y * wall->scale.y) * 0.5));
 	wall->ResizeTile(mapSize);
-	mapLight->CalcLight(map, mapWall->isWall);
+	mapLight->CalcLight(map, mapWall->isWall, block, wall);
 	//// 배치
 	for (int y = 0; y < mapSize.y; y++) {
 		for (int x = 0; x < mapSize.x; x++) {
-			float light = mapLight->GetLightPower(Int2(x, y)) * 0.1f;
+			float light = mapLight->GetLightPower(Int2(x, y)) * 0.05f;
 			switch (map->GetType(Int2(x, y)))
 			{
 			case AIR:
@@ -55,9 +55,9 @@ void Scene1::Init()
 		}
 	}
 	// 블럭 디테일
-	for (int y = 1; y < mapSize.y - 1; y++) {
-		for (int x = 1; x < mapSize.x - 1; x++) {
-			float light = mapLight->GetLightPower(Int2(x, y)) * 0.1f;
+	for (int y = 0; y < mapSize.y; y++) {
+		for (int x = 0; x < mapSize.x; x++) {
+			float light = mapLight->GetLightPower(Int2(x, y)) * 0.05f;
 			tb.TileArrangement(*block, Int2(x, y), map->GetType(Int2(x, y)), *map, mapLight->lightPower);
 			if (y > mapSize.y * 0.64 && map->GetType(Int2(x, y)) == DIRT) {
 				tb.DirtToGrass(*block, Int2(x, y), mapLight->lightPower);
@@ -110,11 +110,13 @@ void Scene1::Update()
 		block->WorldPosToTileIdx(INPUT->GetMouseWorldPos(), tileMousePos);
 		if (tileMousePos.x > 0 && tileMousePos.x < mapSize.x &&
 			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
-			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
+			// cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 			if (block->GetTileState(tileMousePos) == TILE_NONE) {
-				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.1f;
+				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.05f;
 				tb.TileAdd(*block, tileMousePos, *map, addBlockType, mapLight->lightPower);
+				mapLight->SpreadLight(tileMousePos, block, wall);
 				block->UpdateSub();
+				wall->UpdateSub();
 			}
 		}
 	}
@@ -124,9 +126,10 @@ void Scene1::Update()
 			tileMousePos.y > 0 && tileMousePos.y < mapSize.y) {
 			cout << tileMousePos.x << " : " << tileMousePos.y << endl;
 			if (block->GetTileState(tileMousePos) == TILE_WALL) {
-				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.1f;
+				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y)) * 0.05f;
 				tb.TileRemove(*block, tileMousePos, *map, mapLight->lightPower);
 				block->UpdateSub();
+				wall->UpdateSub();
 			}
 		}
 	}

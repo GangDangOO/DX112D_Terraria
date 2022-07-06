@@ -11,14 +11,14 @@
       <Filter>GamObject</Filter>
     </ClInclude>
     <ClInclude Include="OpenSimplexNoise.h" />
-    <ClInclude Include="BackGround.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Tilebuild.h" />
     <ClInclude Include="MapLight.h">
       <Filter>GamObject</Filter>
     </ClInclude>
     <ClInclude Include="MapWall.h">
+      <Filter>GamObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGround.h">
       <Filter>GamObject</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,14 +32,14 @@
       <Filter>GamObject</Filter>
     </ClCompile>
     <ClCompile Include="OpenSimplexNoise.cpp" />
-    <ClCompile Include="BackGround.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Tilebuild.cpp" />
     <ClCompile Include="MapLight.cpp">
       <Filter>GamObject</Filter>
     </ClCompile>
     <ClCompile Include="MapWall.cpp">
+      <Filter>GamObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BackGround.cpp">
       <Filter>GamObject</Filter>
     </ClCompile>
   </ItemGroup>

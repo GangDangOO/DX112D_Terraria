@@ -155,6 +155,16 @@ void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, byte TileState,
     }
 }
 
+void ObTileMap::SetLight(Int2 TileIdx, byte light)
+{
+    int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
+    float lightPower = light * 0.05f;
+    for (int i = 0; i < 6; i++)
+    {
+        vertices[tileIdx * 6 + i].color = Color(lightPower, lightPower, lightPower);
+    }
+}
+
 void ObTileMap::UpdateSub()
 {
     D3D->GetDC()->UpdateSubresource
@@ -163,6 +173,10 @@ void ObTileMap::UpdateSub()
 
 int ObTileMap::GetTileState(Int2 TileIdx)
 {
+    if (TileIdx.x < 0 || TileIdx.y < 0 ||
+        TileIdx.x == tileSize.x || TileIdx.y == tileSize.y)
+        return TILE_NONE;
+
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
     return vertices[tileIdx * 6].tileState;
 }

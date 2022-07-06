@@ -7,7 +7,7 @@ public:
 	byte** lightPower;
 	MapLight(Int2 mapSize);
 	~MapLight();
-	void CalcLight(Map* map, bool** wall);
+	void CalcLight(Map* map, bool** wall, ObTileMap* block, ObTileMap* wallM);
 	byte GetLightPower(Int2 pos);
+	void SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall);
 };
-
