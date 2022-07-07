@@ -2,7 +2,7 @@
 
 void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, byte** mapLight)
 {
-	float light = mapLight[pos.y][pos.x] * 0.05f;
+	float light = mapLight[pos.y][pos.x] * 0.025f;
 	Color color = Color(light, light, light);
 	bool l = false, r = false, u = false, d = false;
 	int n = 0;
@@ -65,7 +65,7 @@ void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, byte** mapLight)
 				int n = RANDOM->Int(1, 6);
 				if (n == 6) {
 					int rd = RANDOM->Int(0, 44);
-					float light = mapLight[pos.y + 1][pos.x] * 0.05f;
+					float light = mapLight[pos.y + 1][pos.x] * 0.025f;
 					Color fColor = Color(light, light, light);
 					block.SetTile(Int2(pos.x, pos.y + 1), Int2(rd, 0), FLOWER, 0, fColor);
 				}
@@ -103,10 +103,11 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapL
 	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE);
 	map.SetType(tilePos, AIR);
 	if (wall[tilePos.y][tilePos.x] == false)
-		mapLight[tilePos.y][tilePos.x] = 10;
+		mapLight[tilePos.y][tilePos.x] = 20;
+		
 	else
 		mapLight[tilePos.y][tilePos.x] = 0;
-	float light = mapLight[tilePos.y][tilePos.x] * 0.05f;
+	float light = mapLight[tilePos.y][tilePos.x] * 0.025f;
 	block.SetLight(tilePos, mapLight[tilePos.y][tilePos.x]);
 	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map, mapLight);
@@ -116,10 +117,11 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapL
 
 void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, byte** mapLight)
 {
-	float light = mapLight[tilePos.y][tilePos.x] * 0.05f;
+	float light = mapLight[tilePos.y][tilePos.x] * 0.025f;
 	if (type == TOUCH) {
-		block.SetTile(tilePos, Int2(0, 0), type);
-		if (mapLight[tilePos.y][tilePos.x] < 10) mapLight[tilePos.y][tilePos.x] = 10;
+		block.SetTile(tilePos, Int2(0, 0), TOUCH);
+		map.SetType(tilePos, TOUCH);
+		mapLight[tilePos.y][tilePos.x] = 20;
 	}
 	else {
 		mapLight[tilePos.y][tilePos.x] = 0;
@@ -135,7 +137,7 @@ void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, byt
 
 void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map, byte** mapLight)
 {
-	float light = mapLight[pos.y][pos.x] * 0.05f;
+	float light = mapLight[pos.y][pos.x] * 0.025f;
 	Color color = Color(light, light, light);
 	if (block.GetTileState(pos) == TileState::TILE_WALL) {
 		bool l = false, r = false, u = false, d = false;

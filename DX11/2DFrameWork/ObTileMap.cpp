@@ -158,7 +158,7 @@ void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, byte TileState,
 void ObTileMap::SetLight(Int2 TileIdx, byte light)
 {
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
-    float lightPower = light * 0.05f;
+    float lightPower = light * 0.025f;
     for (int i = 0; i < 6; i++)
     {
         vertices[tileIdx * 6 + i].color = Color(lightPower, lightPower, lightPower);
