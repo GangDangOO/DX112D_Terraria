@@ -14,8 +14,8 @@ BackGround::BackGround(Vector2 size)
 		mount[i]->SetWorldPos(Vector2(CAM->position.x, size.y * 0.2f));
 	}
 	cave = new ObImage(L"Background_cave.png");
-	cave->scale = Vector2(size - Vector2(0.0, size.y * 0.3));
-	cave->SetWorldPos(Vector2(CAM->position.x, -size.y * 0.18));
+	cave->scale = Vector2(size - Vector2(0.0f, size.y * 0.3f));
+	cave->SetWorldPos(Vector2(CAM->position.x, -size.y * 0.18f));
 	cave->uv = Vector4(cave->uv.x + 128, cave->uv.y + 96, cave->uv.z, cave->uv.w);
 }
 
@@ -34,8 +34,8 @@ void BackGround::Update()
 	sky->Update();
 	for (int i = 0; i < 2; i++) {
 		mount[i]->SetWorldPosX(CAM->position.x);
-		mount[i]->uv.x = 0 + (CAM->position.x / App.GetWidth()) * (i + 1) * 0.2;
-		mount[i]->uv.z = 1 + (CAM->position.x / App.GetWidth()) * (i + 1) * 0.2;
+		mount[i]->uv.x = 0 + (CAM->position.x / App.GetWidth()) * (i + 1) * 0.2f;
+		mount[i]->uv.z = 1 + (CAM->position.x / App.GetWidth()) * (i + 1) * 0.2f;
 		mount[i]->Update();
 	}
 	cave->Update();

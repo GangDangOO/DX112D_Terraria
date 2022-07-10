@@ -9,5 +9,6 @@
 #include "Tilebuild.h"
 #include "MapLight.h"
 #include "MapWall.h"
+#include "Character.h"
 
 #include "Scene1.h"

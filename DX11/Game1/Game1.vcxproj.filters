@@ -21,6 +21,9 @@
     <ClInclude Include="BackGround.h">
       <Filter>GamObject</Filter>
     </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>GamObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -40,6 +43,9 @@
       <Filter>GamObject</Filter>
     </ClCompile>
     <ClCompile Include="BackGround.cpp">
+      <Filter>GamObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
       <Filter>GamObject</Filter>
     </ClCompile>
   </ItemGroup>

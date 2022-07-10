@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, byte** mapLight)
+void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, int** mapLight)
 {
 	float light = mapLight[pos.y][pos.x] * 0.025f;
 	Color color = Color(light, light, light);
@@ -98,7 +98,7 @@ void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, byte** mapLight)
 	}
 }
 
-void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapLight, bool** wall)
+void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, int** mapLight, bool** wall)
 {
 	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE);
 	map.SetType(tilePos, AIR);
@@ -107,7 +107,6 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapL
 		
 	else
 		mapLight[tilePos.y][tilePos.x] = 0;
-	float light = mapLight[tilePos.y][tilePos.x] * 0.025f;
 	block.SetLight(tilePos, mapLight[tilePos.y][tilePos.x]);
 	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map, mapLight);
@@ -115,7 +114,7 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, byte** mapL
 	TileArrangement(block, Int2(tilePos.x, tilePos.y + 1), map.GetType(Int2(tilePos.x, tilePos.y + 1)), map, mapLight);
 }
 
-void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, byte** mapLight)
+void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, int** mapLight)
 {
 	float light = mapLight[tilePos.y][tilePos.x] * 0.025f;
 	if (type == TOUCH) {
@@ -135,7 +134,7 @@ void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, byt
 	}
 }
 
-void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map, byte** mapLight)
+void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map, int** mapLight)
 {
 	float light = mapLight[pos.y][pos.x] * 0.025f;
 	Color color = Color(light, light, light);

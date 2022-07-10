@@ -4,7 +4,7 @@ class MapLight
 private:
 	Int2   mapSize;
 public:
-	byte** lightPower;
+	int** lightPower;
 	MapLight(Int2 mapSize);
 	~MapLight();
 	void CalcLight(Map* map, bool** wall, ObTileMap* block, ObTileMap* wallM);

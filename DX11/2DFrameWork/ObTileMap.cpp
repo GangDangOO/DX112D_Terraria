@@ -155,7 +155,7 @@ void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, byte TileState,
     }
 }
 
-void ObTileMap::SetLight(Int2 TileIdx, byte light)
+void ObTileMap::SetLight(Int2 TileIdx, int light)
 {
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
     float lightPower = light * 0.025f;
