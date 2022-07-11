@@ -387,6 +387,11 @@ void ObTileMap::Load()
     }
 }
 
+Vector2 ObTileMap::GetTileToWorldPos(Int2 pos)
+{
+    return Vector2();
+}
+
 void ObTileMap::CreateTileCost()
 {
     for (int i = 0; i < Tiles.size(); i++)

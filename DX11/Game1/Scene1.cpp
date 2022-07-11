@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#define size 1;
+
 Scene1::Scene1()
 {
 	
@@ -21,8 +23,8 @@ void Scene1::Init()
 	block = new ObTileMap();
 	wall = new ObTileMap();
 	mapWall = new MapWall(mapSize);
-	block->scale = Vector2(16.0f, 16.0f);
-	wall->scale = Vector2(16.0f, 16.0f);
+	block->scale = Vector2(16.0f, 16.0f) * size;
+	wall->scale = Vector2(16.0f, 16.0f) * size;
 	bg = new BackGround(Vector2(mapSize.x * block->scale.x, mapSize.y * block->scale.y));
 	block->SetWorldPos(Vector2(-(mapSize.x * block->scale.x) * 0.5, -(mapSize.y * block->scale.y) * 0.5));
 	block->ResizeTile(mapSize);
@@ -67,6 +69,25 @@ void Scene1::Init()
 	block->UpdateSub();
 	wall->UpdateSub();
 	addBlockType = DIRT;
+	block->Update();
+	// 플레이어 배치
+	player = new Player();
+	{
+		Vector2 pos = Vector2(0.0f, 1350.0f);
+		Int2 intpos;
+		block->WorldPosToTileIdx(pos, intpos);
+		while (true) {
+			intpos.y--;
+			if (block->GetTileState(intpos) == TILE_WALL) {
+				intpos = Int2(block->tileSize.x * 0.5 - intpos.x, block->tileSize.y * 0.5 - intpos.y);
+				pos = Vector2(intpos.x * block->scale.x, intpos.y * block->scale.y);
+				pos *= -1;
+				pos += Vector2(block->scale.x * 0.5, block->scale.y);
+				player->col->SetWorldPos(pos);
+				break;
+			}
+		}
+	}
 }
 
 void Scene1::Release()
@@ -75,6 +96,7 @@ void Scene1::Release()
 	SafeDelete(mapLight);
 	SafeDelete(block);
 	SafeDelete(wall);
+	SafeDelete(player);
 }
 
 void Scene1::Update()
@@ -82,7 +104,7 @@ void Scene1::Update()
 	// ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
 	
 	// 카메라 움직임
-	Vector2 move = Vector2(0.0, 0.0);
+	/*Vector2 move = Vector2(0.0, 0.0);
 	if (INPUT->KeyPress('W'))
 		move.y += 1;
 	if (INPUT->KeyPress('A'))
@@ -92,8 +114,22 @@ void Scene1::Update()
 	if (INPUT->KeyPress('D'))
 		move.x += 1;
 	move.Normalize();
-	CAM->position += move * DELTA * 500;
-	
+	CAM->position += move * DELTA * 500;*/
+
+	CAM->position = player->col->GetWorldPos();
+
+	if (INPUT->KeyDown('F')) {
+		//Vector2 pos = INPUT->GetMouseWorldPos();
+		Vector2 pos = Vector2(0.0f, 1350.0f);
+		Int2 intpos;
+		block->WorldPosToTileIdx(pos, intpos);
+		cout << intpos.x << " : " << intpos.y << '\n';
+		intpos = Int2(block->tileSize.x * 0.5 - intpos.x, block->tileSize.y * 0.5 - intpos.y);
+		pos = Vector2(intpos.x * block->scale.x, intpos.y * block->scale.y);
+		pos *= -1;
+		pos += Vector2(block->scale.x * 0.5, block->scale.y);
+		player->col->SetWorldPos(pos);
+	}
 	// 설치블럭변경
 	if (INPUT->KeyPress('1')) {
 		addBlockType = DIRT;
@@ -114,7 +150,6 @@ void Scene1::Update()
 				float light = mapLight->GetLightPower(Int2(tileMousePos.x, tileMousePos.y));
 				tb.TileAdd(*block, tileMousePos, *map, addBlockType, mapLight->lightPower);
 				if (map->GetType(tileMousePos) == TOUCH) {
-					cout << (int)mapLight->lightPower[tileMousePos.y][tileMousePos.x] << '\n';
 					mapLight->SpreadLight(tileMousePos, block, wall);
 
 				}
@@ -174,6 +209,7 @@ void Scene1::Update()
 	bg->Update();
 	wall->Update();
 	block->Update();
+	player->Update();
 }
 
 void Scene1::LateUpdate()
@@ -186,6 +222,7 @@ void Scene1::Render()
 	bg->Render();
 	wall->Render();
 	block->Render();
+	player->Render();
 }
 
 void Scene1::ResizeScreen()

@@ -11,6 +11,7 @@ private:
 	BackGround* bg;
 	Tilebuild tb;
 	byte		addBlockType;
+	Player* player;
 public:
 	Scene1();
 	~Scene1();

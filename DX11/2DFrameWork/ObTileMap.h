@@ -62,6 +62,7 @@ public:
     void        Save();
     void        Load();
     Int2        GetTileSize() { return tileSize; };
+    Vector2     GetTileToWorldPos(Int2 pos);
     void        CreateTileCost();
     bool        PathFinding(Int2 sour, Int2 dest, OUT vector<Tile*>& way);
 };

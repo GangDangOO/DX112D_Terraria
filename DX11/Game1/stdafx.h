@@ -10,5 +10,6 @@
 #include "MapLight.h"
 #include "MapWall.h"
 #include "Character.h"
+#include "Player.h"
 
 #include "Scene1.h"

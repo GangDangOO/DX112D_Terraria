@@ -7,22 +7,27 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="PerlinNoise.h" />
-    <ClInclude Include="Map.h">
-      <Filter>GamObject</Filter>
-    </ClInclude>
     <ClInclude Include="OpenSimplexNoise.h" />
-    <ClInclude Include="Tilebuild.h" />
+    <ClInclude Include="BackGround.h">
+      <Filter>GamObject\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>GamObject\Map</Filter>
+    </ClInclude>
     <ClInclude Include="MapLight.h">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Map</Filter>
     </ClInclude>
     <ClInclude Include="MapWall.h">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Map</Filter>
     </ClInclude>
-    <ClInclude Include="BackGround.h">
-      <Filter>GamObject</Filter>
+    <ClInclude Include="Tilebuild.h">
+      <Filter>GamObject\Map</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GamObject\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -31,22 +36,27 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="PerlinNoise.cpp" />
-    <ClCompile Include="Map.cpp">
-      <Filter>GamObject</Filter>
-    </ClCompile>
     <ClCompile Include="OpenSimplexNoise.cpp" />
-    <ClCompile Include="Tilebuild.cpp" />
+    <ClCompile Include="BackGround.cpp">
+      <Filter>GamObject\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>GamObject\Map</Filter>
+    </ClCompile>
     <ClCompile Include="MapLight.cpp">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Map</Filter>
     </ClCompile>
     <ClCompile Include="MapWall.cpp">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Map</Filter>
     </ClCompile>
-    <ClCompile Include="BackGround.cpp">
-      <Filter>GamObject</Filter>
+    <ClCompile Include="Tilebuild.cpp">
+      <Filter>GamObject\Map</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>GamObject</Filter>
+      <Filter>GamObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GamObject\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +65,12 @@
     </Filter>
     <Filter Include="GamObject">
       <UniqueIdentifier>{d419b750-f03e-46e2-8473-8ab91888a4ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GamObject\Map">
+      <UniqueIdentifier>{7f114590-4de4-4bc7-8086-c4f938354f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GamObject\Character">
+      <UniqueIdentifier>{cd08f33b-bfd6-4caf-b492-7a988fa7d49d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
