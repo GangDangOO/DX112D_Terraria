@@ -8,6 +8,7 @@ struct Status
 class Character
 {
 public:
+	ObTileMap* tileMap;
 	Status stat;
 	ObRect* col;
 	Character();

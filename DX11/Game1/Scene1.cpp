@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#define size 1;
+#define size 0.5;
 
 Scene1::Scene1()
 {
@@ -14,7 +14,6 @@ Scene1::~Scene1()
 
 void Scene1::Init()
 {
-	CAM->position.y += App.GetHeight() + 400;
 	//mapSize = Int2(App.GetWidth() * 0.2, App.GetHeight() * 0.2);
 	mapSize = Int2(1000, 400);
 	unsigned int seed = RANDOM->Int(200, 350);
@@ -71,7 +70,9 @@ void Scene1::Init()
 	addBlockType = DIRT;
 	block->Update();
 	// 플레이어 배치
-	player = new Player();
+	player = new Player(block);
+	player->playerSprite->scale *= size;
+	player->col->scale *= size;
 	{
 		Vector2 pos = Vector2(0.0f, 1350.0f);
 		Int2 intpos;
@@ -88,6 +89,8 @@ void Scene1::Init()
 			}
 		}
 	}
+
+	CAM->position = player->col->GetWorldPos();
 }
 
 void Scene1::Release()
@@ -102,34 +105,27 @@ void Scene1::Release()
 void Scene1::Update()
 {
 	// ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
-	
+
 	// 카메라 움직임
-	/*Vector2 move = Vector2(0.0, 0.0);
-	if (INPUT->KeyPress('W'))
-		move.y += 1;
-	if (INPUT->KeyPress('A'))
-		move.x -= 1;
-	if (INPUT->KeyPress('S'))
-		move.y -= 1;
-	if (INPUT->KeyPress('D'))
-		move.x += 1;
-	move.Normalize();
-	CAM->position += move * DELTA * 500;*/
-
-	CAM->position = player->col->GetWorldPos();
-
-	if (INPUT->KeyDown('F')) {
-		//Vector2 pos = INPUT->GetMouseWorldPos();
-		Vector2 pos = Vector2(0.0f, 1350.0f);
-		Int2 intpos;
-		block->WorldPosToTileIdx(pos, intpos);
-		cout << intpos.x << " : " << intpos.y << '\n';
-		intpos = Int2(block->tileSize.x * 0.5 - intpos.x, block->tileSize.y * 0.5 - intpos.y);
-		pos = Vector2(intpos.x * block->scale.x, intpos.y * block->scale.y);
-		pos *= -1;
-		pos += Vector2(block->scale.x * 0.5, block->scale.y);
-		player->col->SetWorldPos(pos);
+	if (INPUT->KeyDown('C')) camMod = !camMod;
+	if (camMod) {
+		Vector2 move = Vector2(0.0, 0.0);
+		if (INPUT->KeyPress('W'))
+			move.y += 1;
+		if (INPUT->KeyPress('A'))
+			move.x -= 1;
+		if (INPUT->KeyPress('S'))
+			move.y -= 1;
+		if (INPUT->KeyPress('D'))
+			move.x += 1;
+		move.Normalize();
+		CAM->position += move * DELTA * 500;
 	}
+	else {
+		CAM->position = player->col->GetWorldPos();
+	}
+
+
 	// 설치블럭변경
 	if (INPUT->KeyPress('1')) {
 		addBlockType = DIRT;
@@ -209,7 +205,7 @@ void Scene1::Update()
 	bg->Update();
 	wall->Update();
 	block->Update();
-	player->Update();
+	if (!camMod) player->Update();
 }
 
 void Scene1::LateUpdate()

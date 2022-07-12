@@ -12,6 +12,8 @@ private:
 	Tilebuild tb;
 	byte		addBlockType;
 	Player* player;
+
+	bool camMod;
 public:
 	Scene1();
 	~Scene1();
