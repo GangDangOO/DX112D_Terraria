@@ -58,20 +58,36 @@ bool Player::Run()
 {
 	bool isMove = false;
 	Int2 temp;
-	Int2 lCheckBlock[3], rCheckBlock[3];
+	Int2 lCheckBlock, rCheckBlock;
 	tileMap->WorldPosToTileIdx(col->GetWorldPos(), temp);
+	lCheckBlock = Int2(temp.x - 1, temp.y + 1);
+	rCheckBlock = Int2(temp.x + 1, temp.y + 1);
+	cout << "L : " << tileMap->GetTileState(lCheckBlock) << '\t';
+	cout << "R : " << tileMap->GetTileState(rCheckBlock) << '\n';
 	// your now get check left and right phisics
-	if (INPUT->KeyPress('A')) {
+	if (INPUT->KeyPress('A') &&
+		tileMap->GetTileState(lCheckBlock) == 0 &&
+		tileMap->GetTileState(Int2(lCheckBlock.x, lCheckBlock.y + 1)) == 0 &&
+		tileMap->GetTileState(Int2(lCheckBlock.x, lCheckBlock.y + 2)) == 0) {
 		ChangeStat(ANIM::MOVE);
 		move.x -= playerBoostSpeed * DELTA;
 		isMove = true;
 		playerSprite->reverseLR = false;
 	}
-	else if (INPUT->KeyPress('D')) {
+	else if (tileMap->GetTileState(lCheckBlock) == 1 && move.x < 0.0f) {
+		move.x = 0.0f;
+	}
+	else if (INPUT->KeyPress('D') && 
+		tileMap->GetTileState(rCheckBlock) == 0 &&
+		tileMap->GetTileState(Int2(rCheckBlock.x, rCheckBlock.y + 1)) == 0 &&
+		tileMap->GetTileState(Int2(rCheckBlock.x, rCheckBlock.y + 2)) == 0) {
 		ChangeStat(ANIM::MOVE);
 		move.x += playerBoostSpeed * DELTA;
 		isMove = true;
 		playerSprite->reverseLR = true;
+	}
+	else if (tileMap->GetTileState(rCheckBlock) == 1 && move.x > 0.0f) {
+		move.x = 0.0f;
 	}
 	else {
 		if (move.x > DELTA * playerBoostSpeed) move.x -= DELTA * playerBoostSpeed;
@@ -89,13 +105,16 @@ bool Player::Run()
 bool Player::fall()
 {
 	bool isFall = false;
-	Int2 checkDown;
-	tileMap->WorldPosToTileIdx(col->GetWorldPos(), checkDown);
-	if (tileMap->GetTileState(checkDown) == 0 && tileMap->GetTileState(Int2(checkDown.x - 1, checkDown.y)) == 0) isFall = true;
+	Int2 checkTile;
+	tileMap->WorldPosToTileIdx(col->GetWorldPos(), checkTile);
+	if (tileMap->GetTileState(checkTile) == 0 && tileMap->GetTileState(Int2(checkTile.x - 1, checkTile.y)) == 0) isFall = true;
 	if (INPUT->KeyDown(VK_SPACE) && !isFall) {
 		isJump = true;
 		move.y = 100.0f;
 	}
+	if (tileMap->GetTileState(Int2(checkTile.x, checkTile.y + 4)) == 1 ||
+		tileMap->GetTileState(Int2(checkTile.x - 1, checkTile.y + 4)) == 1)
+		move.y = 0.0f;
 	if (isFall)move.y -= DELTA * 200;
 	else if (move.y < DELTA)move.y = 0.0f;
 

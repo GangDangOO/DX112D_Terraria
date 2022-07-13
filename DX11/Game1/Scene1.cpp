@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#define size 0.5;
+#define size 1;
 
 Scene1::Scene1()
 {
