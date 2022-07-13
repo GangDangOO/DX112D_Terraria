@@ -71,7 +71,7 @@ void Scene1::Init()
 	block->Update();
 	// 플레이어 배치
 	player = new Player(block);
-	player->playerSprite->scale *= size;
+	player->bodySprite->scale *= size;
 	player->col->scale *= size;
 	{
 		Vector2 pos = Vector2(0.0f, 1350.0f);
@@ -83,7 +83,7 @@ void Scene1::Init()
 				intpos = Int2(block->tileSize.x * 0.5 - intpos.x, block->tileSize.y * 0.5 - intpos.y);
 				pos = Vector2(intpos.x * block->scale.x, intpos.y * block->scale.y);
 				pos *= -1;
-				pos += Vector2(block->scale.x * 0.5, block->scale.y);
+				pos += Vector2(block->scale.x * 0.5, block->scale.y + 10.0f);
 				player->col->SetWorldPos(pos);
 				break;
 			}
