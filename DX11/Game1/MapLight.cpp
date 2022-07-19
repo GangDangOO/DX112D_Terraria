@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#define MAXLIGHT 20
+
 MapLight::MapLight(Int2 mapsize)
 {
 	mapSize = mapsize;
@@ -22,43 +24,39 @@ MapLight::~MapLight()
 	SafeDelete(lightPower);
 }
 
-void MapLight::CalcLight(Map* map, bool** wall, ObTileMap* block, ObTileMap* wallM)
+void MapLight::CalcLight(Map* map, bool** wall)
 {
 	for (int i = 0; i < mapSize.y; i++) {
 		for (int j = 0; j < mapSize.x; j++) {
 			if (map->GetType(Int2(j, i)) == AIR &&
 				wall[i][j] == false) {
-				lightPower[i][j] = 20;
-				SpreadLight(Int2(j, i), block, wallM);
+				lightPower[i][j] = 0;
+			}
+			else {
+				lightPower[i][j] = MAXLIGHT;
 			}
 		}
 	}
 }
 
-float MapLight::GetLightPower(Int2 pos)
-{
-	return lightPower[pos.y][pos.x] * 0.025f;
-}
-
-void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
+void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* _shadow)
 {
 	queue<Int2> lightPoint;
 	lightPoint.push(pos);
 	while (!lightPoint.empty()) {
 		Int2 l = lightPoint.front();
+		_shadow->SetLight(l, lightPower[l.y][l.x]);
 		lightPoint.pop();
-		block->SetLight(l, lightPower[l.y][l.x]);
-		wall->SetLight(l, lightPower[l.y][l.x]);
 		if (l.x > 0) {
 			int pointPower = lightPower[l.y][l.x];
 			Int2 leftPos = Int2(l.x - 1, l.y);
 			if (block->GetTileState(leftPos) == TILE_WALL)
-				pointPower -= 3;
+				pointPower += 5;
 			else
-				pointPower -= 2;
-			if (pointPower < 0)
-				pointPower = 0;
-			if (pointPower > lightPower[leftPos.y][leftPos.x]) {
+				pointPower += 2;
+			if (pointPower > MAXLIGHT)
+				pointPower = MAXLIGHT;
+			if (pointPower < lightPower[leftPos.y][leftPos.x]) {
 				lightPower[leftPos.y][leftPos.x] = pointPower;
 				lightPoint.push(leftPos);
 			}
@@ -67,12 +65,12 @@ void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
 			int pointPower = lightPower[l.y][l.x];
 			Int2 downPos = Int2(l.x, l.y - 1);
 			if (block->GetTileState(downPos) == TILE_WALL)
-				pointPower -= 3;
+				pointPower += 5;
 			else
-				pointPower -= 2;
-			if (pointPower < 0)
-				pointPower = 0;
-			if (pointPower > lightPower[downPos.y][downPos.x]) {
+				pointPower += 2;
+			if (pointPower > MAXLIGHT)
+				pointPower = MAXLIGHT;
+			if (pointPower < lightPower[downPos.y][downPos.x]) {
 				lightPower[downPos.y][downPos.x] = pointPower;
 				lightPoint.push(downPos);
 			}
@@ -81,12 +79,12 @@ void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
 			int pointPower = lightPower[l.y][l.x];
 			Int2 rightPos = Int2(l.x + 1, l.y);
 			if (block->GetTileState(rightPos) == TILE_WALL)
-				pointPower -= 3;
+				pointPower += 5;
 			else
-				pointPower -= 2;
-			if (pointPower < 0)
-				pointPower = 0;
-			if (pointPower > lightPower[rightPos.y][rightPos.x]) {
+				pointPower += 2;
+			if (pointPower > MAXLIGHT)
+				pointPower = MAXLIGHT;
+			if (pointPower < lightPower[rightPos.y][rightPos.x]) {
 				lightPower[rightPos.y][rightPos.x] = pointPower;
 				lightPoint.push(rightPos);
 			}
@@ -95,74 +93,24 @@ void MapLight::SpreadLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
 			int pointPower = lightPower[l.y][l.x];
 			Int2 upPos = Int2(l.x, l.y + 1);
 			if (block->GetTileState(upPos) == TILE_WALL)
-				pointPower -= 3;
+				pointPower += 5;
 			else
-				pointPower -= 2;
-			if (pointPower < 0)
-				pointPower = 0;
-			if (pointPower > lightPower[upPos.y][upPos.x]) {
+				pointPower += 2;
+			if (pointPower > MAXLIGHT)
+				pointPower = MAXLIGHT;
+			if (pointPower < lightPower[upPos.y][upPos.x]) {
 				lightPower[upPos.y][upPos.x] = pointPower;
 				lightPoint.push(upPos);
 			}
 		}
 	}
-	/*if (pos.x - 1 < 0 || pos.y - 1 < 0 ||
-		pos.x + 1 == mapSize.x || pos.y + 1 == mapSize.y) return;
-	block->SetLight(Int2(pos.x, pos.y), lightPower[pos.y][pos.x]);
-	wall->SetLight(Int2(pos.x, pos.y), lightPower[pos.y][pos.x]);
-	if (lightPower[pos.y][pos.x] == 0) return;
-
-	byte light = lightPower[pos.y][pos.x] - 1;
-	if (block->GetTileState(Int2(pos.x, pos.y - 1)) == TILE_WALL)
-		if (light > 2)
-			light -= 2;
-		else
-			light = 0;
-	if (lightPower[pos.y - 1][pos.x] < light) {
-		lightPower[pos.y - 1][pos.x] = light;
-		SpreadLight(Int2(pos.x, pos.y - 1), block, wall);
-	}
-
-	light = lightPower[pos.y][pos.x] - 1;
-	if (block->GetTileState(Int2(pos.x - 1, pos.y)) == TILE_WALL)
-		if (light > 2)
-			light -= 2;
-		else
-			light = 0;
-	if (lightPower[pos.y][pos.x - 1] < light) {
-		lightPower[pos.y][pos.x - 1] = light;
-		SpreadLight(Int2(pos.x - 1, pos.y), block, wall);
-	}
-
-	light = lightPower[pos.y][pos.x] - 1;
-	if (block->GetTileState(Int2(pos.x, pos.y + 1)) == TILE_WALL)
-		if (light > 2)
-			light -= 2;
-		else
-			light = 0;
-	if (lightPower[pos.y + 1][pos.x] < light) {
-		lightPower[pos.y + 1][pos.x] = light;
-		SpreadLight(Int2(pos.x, pos.y + 1), block, wall);
-	}
-
-	light = lightPower[pos.y][pos.x] - 1;
-	if (block->GetTileState(Int2(pos.x + 1, pos.y)) == TILE_WALL)
-		if (light > 2)
-			light -= 2;
-		else
-			light = 0;
-	if (lightPower[pos.y][pos.x + 1] < light) {
-		lightPower[pos.y][pos.x + 1] = light;
-		SpreadLight(Int2(pos.x + 1, pos.y), block, wall);
-	}*/
 }
 
-void MapLight::RemoveLight(Int2 pos, ObTileMap* block, ObTileMap* wall)
+void MapLight::RemoveLight(Int2 pos, ObTileMap* _shadow)
 {
 	if (pos.x - 1 < 0 || pos.y - 1 < 0 ||
 		pos.x + 1 == mapSize.x || pos.y + 1 == mapSize.y) return;
-	if (lightPower[pos.y][pos.x] == 20) return;
-		lightPower[pos.y][pos.x] = 0;
-		block->SetLight(pos, lightPower[pos.y][pos.x]);
-		wall->SetLight(pos, lightPower[pos.y][pos.x]);
+	if (lightPower[pos.y][pos.x] == 0) return;
+	lightPower[pos.y][pos.x] = MAXLIGHT;
+	_shadow->SetLight(pos, MAXLIGHT);
 }

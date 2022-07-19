@@ -6,12 +6,13 @@ private:
 	Map* map;
 	ObTileMap* block;
 	ObTileMap* wall;
+	ObTileMap* shadow;
 	MapWall* mapWall;
 	MapLight* mapLight;
 	BackGround* bg;
 	Tilebuild tb;
-	byte		addBlockType;
 	Player* player;
+	Slime* slime;
 
 	bool camMod;
 public:

@@ -44,7 +44,8 @@ ObTileMap::ObTileMap()
     tileImages[4]->maxFrame = Int2(45, 1);
     tileImages[5] = new ObImage(L"Tiles_4.png");
     tileImages[5]->maxFrame = Int2(3, 1);
-    tileImages[6] = nullptr;
+    tileImages[6] = new ObImage(L"Shadow.png");
+    tileImages[6]->maxFrame = Int2(1, 1);
 
     //¼¼·Î
     for (int i = 0; i < tileSize.y; i++)
@@ -158,10 +159,10 @@ void ObTileMap::SetTile(Int2 TileIdx, Int2 FrameIdx, int ImgIdx, byte TileState,
 void ObTileMap::SetLight(Int2 TileIdx, int light)
 {
     int tileIdx = tileSize.x * TileIdx.y + TileIdx.x;
-    float lightPower = light * 0.025f;
+    float shadow = light * 0.025f;
     for (int i = 0; i < 6; i++)
     {
-        vertices[tileIdx * 6 + i].color = Color(lightPower, lightPower, lightPower);
+        vertices[tileIdx * 6 + i].color.A(shadow);
     }
 }
 

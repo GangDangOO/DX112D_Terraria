@@ -31,12 +31,17 @@ public:
 	ObRect* col;
 
 	ObTileMap* tileMap;
-	bool isCheckBlock[12];
+	bool isCheckBlock[10];
+	ObRect blockCol[10];
 	Bool4 dirCheck;
 	Vector2 move;
 	Character();
 	~Character();
+	void Spawn();
+	void Spawn(Vector2 playerPos);
 	void IsBlockUpdate();
 	void Update();
+	void LateUpdate();
+	void Render();
 };
 

@@ -1,9 +1,7 @@
 #include "stdafx.h"
 
-void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, int** mapLight)
+void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos)
 {
-	float light = mapLight[pos.y][pos.x] * 0.025f;
-	Color color = Color(light, light, light);
 	bool l = false, r = false, u = false, d = false;
 	int n = 0;
 	if (block.GetTileState(Int2(pos.x - 1, pos.y)) == TILE_NONE ||
@@ -42,55 +40,53 @@ void Tilebuild::DirtToGrass(ObTileMap& block, Int2 pos, int** mapLight)
 		switch (n)
 		{
 		case 1:
-			block.SetTile(pos, Int2(0, 4), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 4), GRASS, TILE_WALL);
 			break;
 		case 2:
-			block.SetTile(pos, Int2(2, 2), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(2, 2), GRASS, TILE_WALL);
 			break;
 		case 3:
-			block.SetTile(pos, Int2(1, 4), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(1, 4), GRASS, TILE_WALL);
 			break;
 		case 4:
-			block.SetTile(pos, Int2(0, 1), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 1), GRASS, TILE_WALL);
 			break;
 		case 6:
-			block.SetTile(pos, Int2(4, 1), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(4, 1), GRASS, TILE_WALL);
 			break;
 		case 7:
-			block.SetTile(pos, Int2(0, 3), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 3), GRASS, TILE_WALL);
 			break;
 		case 8:
-			block.SetTile(pos, Int2(2, 0), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(2, 0), GRASS, TILE_WALL);
 			if (block.GetTileState(Int2(pos.x, pos.y + 1)) == TILE_NONE) {
 				int n = RANDOM->Int(1, 6);
 				if (n == 6) {
 					int rd = RANDOM->Int(0, 44);
-					float light = mapLight[pos.y + 1][pos.x] * 0.025f;
-					Color fColor = Color(light, light, light);
-					block.SetTile(Int2(pos.x, pos.y + 1), Int2(rd, 0), FLOWER, 0, fColor);
+					block.SetTile(Int2(pos.x, pos.y + 1), Int2(rd, 0), FLOWER, 0);
 				}
 			}
 			break;
 		case 9:
-			block.SetTile(pos, Int2(1, 3), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(1, 3), GRASS, TILE_WALL);
 			break;
 		case 18:
-			block.SetTile(pos, Int2(6, 0), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(6, 0), GRASS, TILE_WALL);
 			break;
 		case 16:
-			block.SetTile(pos, Int2(12, 0), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(12, 0), GRASS, TILE_WALL);
 			break;
 		case 12:
-			block.SetTile(pos, Int2(6, 3), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(6, 3), GRASS, TILE_WALL);
 			break;
 		case 14:
-			block.SetTile(pos, Int2(9, 0), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(9, 0), GRASS, TILE_WALL);
 			break;
 		case 28:
-			block.SetTile(pos, Int2(7, 4), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(7, 4), GRASS, TILE_WALL);
 			break;
 		case 46:
-			block.SetTile(pos, Int2(5, 1), GRASS, TILE_WALL, color);
+			block.SetTile(pos, Int2(5, 1), GRASS, TILE_WALL);
 			break;
 		default:
 			break;
@@ -103,11 +99,10 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, int** mapLi
 	block.SetTile(tilePos, Int2(1, 1), 1, TILE_NONE);
 	map.SetType(tilePos, AIR);
 	if (wall[tilePos.y][tilePos.x] == false)
-		mapLight[tilePos.y][tilePos.x] = 20;
+		mapLight[tilePos.y][tilePos.x] = 0;
 		
 	else
-		mapLight[tilePos.y][tilePos.x] = 0;
-	block.SetLight(tilePos, mapLight[tilePos.y][tilePos.x]);
+		mapLight[tilePos.y][tilePos.x] = 20;
 	TileArrangement(block, Int2(tilePos.x - 1, tilePos.y), map.GetType(Int2(tilePos.x - 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x + 1, tilePos.y), map.GetType(Int2(tilePos.x + 1, tilePos.y)), map, mapLight);
 	TileArrangement(block, Int2(tilePos.x, tilePos.y - 1), map.GetType(Int2(tilePos.x, tilePos.y - 1)), map, mapLight);
@@ -116,14 +111,13 @@ void Tilebuild::TileRemove(ObTileMap& block, Int2 tilePos, Map& map, int** mapLi
 
 void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, int** mapLight)
 {
-	float light = mapLight[tilePos.y][tilePos.x] * 0.025f;
 	if (type == TOUCH) {
 		block.SetTile(tilePos, Int2(0, 0), TOUCH);
 		map.SetType(tilePos, TOUCH);
-		mapLight[tilePos.y][tilePos.x] = 20;
+		mapLight[tilePos.y][tilePos.x] = 0;
 	}
 	else {
-		mapLight[tilePos.y][tilePos.x] = 0;
+		mapLight[tilePos.y][tilePos.x] = 20;
 		block.SetTileState(tilePos, TILE_WALL);
 		map.SetType(tilePos, type);
 		TileArrangement(block, Int2(tilePos.x, tilePos.y), map.GetType(tilePos), map, mapLight);
@@ -136,8 +130,6 @@ void Tilebuild::TileAdd(ObTileMap& block, Int2 tilePos, Map& map, byte type, int
 
 void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map, int** mapLight)
 {
-	float light = mapLight[pos.y][pos.x] * 0.025f;
-	Color color = Color(light, light, light);
 	if (block.GetTileState(pos) == TileState::TILE_WALL) {
 		bool l = false, r = false, u = false, d = false;
 		int n = 0;
@@ -189,70 +181,70 @@ void Tilebuild::TileArrangement(ObTileMap& block, Int2 pos, byte type, Map& map,
 					pos.y + 1 == block.tileSize.y)
 					u = true;
 
-				if (l && r && d && u) block.SetTile(pos, Int2(6, 11), type, TILE_WALL, color);
-				else if (!l && !r && !d && !u) block.SetTile(pos, Int2(1, 1), type, TILE_WALL, color);
-				else if (l && u && r) block.SetTile(pos, Int2(11, 5), type, TILE_WALL, color);
-				else if (l && d && r) block.SetTile(pos, Int2(11, 8), type, TILE_WALL, color);
-				else if (l && u && d) block.SetTile(pos, Int2(12, 5), type, TILE_WALL, color);
-				else if (r && u && d) block.SetTile(pos, Int2(12, 8), type, TILE_WALL, color);
-				else if (l && r) block.SetTile(pos, Int2(10, 7), type, TILE_WALL, color);
-				else if (u && d) block.SetTile(pos, Int2(9, 10), type, TILE_WALL, color);
-				else if (l && u) block.SetTile(pos, Int2(2, 5), type, TILE_WALL, color);
-				else if (u && r) block.SetTile(pos, Int2(3, 5), type, TILE_WALL, color);
-				else if (r && d) block.SetTile(pos, Int2(3, 6), type, TILE_WALL, color);
-				else if (d && l) block.SetTile(pos, Int2(2, 6), type, TILE_WALL, color);
-				else if (l) block.SetTile(pos, Int2(9, 7), type, TILE_WALL, color);
-				else if (r) block.SetTile(pos, Int2(8, 7), type, TILE_WALL, color);
-				else if (u) block.SetTile(pos, Int2(8, 6), type, TILE_WALL, color);
-				else if (d) block.SetTile(pos, Int2(8, 5), type, TILE_WALL, color);
+				if (l && r && d && u) block.SetTile(pos, Int2(6, 11), type, TILE_WALL);
+				else if (!l && !r && !d && !u) block.SetTile(pos, Int2(1, 1), type, TILE_WALL);
+				else if (l && u && r) block.SetTile(pos, Int2(11, 5), type, TILE_WALL);
+				else if (l && d && r) block.SetTile(pos, Int2(11, 8), type, TILE_WALL);
+				else if (l && u && d) block.SetTile(pos, Int2(12, 5), type, TILE_WALL);
+				else if (r && u && d) block.SetTile(pos, Int2(12, 8), type, TILE_WALL);
+				else if (l && r) block.SetTile(pos, Int2(10, 7), type, TILE_WALL);
+				else if (u && d) block.SetTile(pos, Int2(9, 10), type, TILE_WALL);
+				else if (l && u) block.SetTile(pos, Int2(2, 5), type, TILE_WALL);
+				else if (u && r) block.SetTile(pos, Int2(3, 5), type, TILE_WALL);
+				else if (r && d) block.SetTile(pos, Int2(3, 6), type, TILE_WALL);
+				else if (d && l) block.SetTile(pos, Int2(2, 6), type, TILE_WALL);
+				else if (l) block.SetTile(pos, Int2(9, 7), type, TILE_WALL);
+				else if (r) block.SetTile(pos, Int2(8, 7), type, TILE_WALL);
+				else if (u) block.SetTile(pos, Int2(8, 6), type, TILE_WALL);
+				else if (d) block.SetTile(pos, Int2(8, 5), type, TILE_WALL);
 			}
 			else
-				block.SetTile(pos, Int2(1, 1), type, TILE_WALL, color);
+				block.SetTile(pos, Int2(1, 1), type, TILE_WALL);
 			break;
 		case 1:
-			block.SetTile(pos, Int2(0, 4), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 4), type, TILE_WALL);
 			break;											
 		case 2:												
-			block.SetTile(pos, Int2(2, 2), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(2, 2), type, TILE_WALL);
 			break;											
 		case 3:												
-			block.SetTile(pos, Int2(1, 4), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(1, 4), type, TILE_WALL);
 			break;											
 		case 4:												
-			block.SetTile(pos, Int2(0, 1), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 1), type, TILE_WALL);
 			break;											
 		case 5:												
-			block.SetTile(pos, Int2(9, 3), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(9, 3), type, TILE_WALL);
 			break;											
 		case 6:												
-			block.SetTile(pos, Int2(4, 1), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(4, 1), type, TILE_WALL);
 			break;											
 		case 7:												
-			block.SetTile(pos, Int2(0, 3), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(0, 3), type, TILE_WALL);
 			break;											
 		case 8:												
-			block.SetTile(pos, Int2(2, 0), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(2, 0), type, TILE_WALL);
 			break;											
 		case 9:												
-			block.SetTile(pos, Int2(1, 3), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(1, 3), type, TILE_WALL);
 			break;											
 		case 18:											
-			block.SetTile(pos, Int2(6, 0), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(6, 0), type, TILE_WALL);
 			break;												  
 		case 16:												  
-			block.SetTile(pos, Int2(12, 0), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(12, 0), type, TILE_WALL);
 			break;												  
 		case 12:												  
-			block.SetTile(pos, Int2(6, 3), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(6, 3), type, TILE_WALL);
 			break;											
 		case 14:											
-			block.SetTile(pos, Int2(9, 0), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(9, 0), type, TILE_WALL);
 			break;											
 		case 28:											
-			block.SetTile(pos, Int2(7, 4), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(7, 4), type, TILE_WALL);
 			break;											
 		case 46:											
-			block.SetTile(pos, Int2(5, 1), type, TILE_WALL, color);
+			block.SetTile(pos, Int2(5, 1), type, TILE_WALL);
 			break;
 		default:
 			break;

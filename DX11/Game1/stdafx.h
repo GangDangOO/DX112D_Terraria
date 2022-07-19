@@ -11,5 +11,6 @@
 #include "MapWall.h"
 #include "Character.h"
 #include "Player.h"
+#include "Slime.h"
 
 #include "Scene1.h"
