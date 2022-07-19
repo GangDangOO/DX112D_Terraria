@@ -28,9 +28,9 @@ private:
 
     ANISTATE                    aniState;
     float                       aniTime;
-    float                       aniInterval; //재생간격
     bool                        aniXAxis;   //가로재생?
 public:
+    float                       aniInterval; //재생간격
     Vector4                     uv;
     Int2                        maxFrame;   //분할갯수
     Int2                        frame;      //현재재생중인 인덱스

@@ -41,6 +41,27 @@ void Character::Spawn()
 void Character::Spawn(Vector2 playerPos)
 {
 	Vector2 pos = playerPos;
+	pos.y += 500.0f;
+	int r = RANDOM->Int(0, 1);
+	if (r == 0) {
+		pos.x -= App.GetHalfWidth() + 100.0f;
+	}
+	else {
+		pos.x += App.GetHalfWidth() + 100.0f;
+	}
+	Int2 intpos;
+	tileMap->WorldPosToTileIdx(pos, intpos);
+	while (true) {
+		intpos.y--;
+		if (tileMap->GetTileState(intpos) == TILE_WALL) {
+			intpos = Int2(tileMap->tileSize.x * 0.5 - intpos.x, tileMap->tileSize.y * 0.5 - intpos.y);
+			pos = Vector2(intpos.x * tileMap->scale.x, intpos.y * tileMap->scale.y);
+			pos *= -1;
+			pos.y += tileMap->scale.y + 1;
+			col->SetWorldPos(pos);
+			break;
+		}
+	}
 }
 
 void Character::IsBlockUpdate()
@@ -60,9 +81,10 @@ void Character::IsBlockUpdate()
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
 		blockCol[0].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_1] = true;
-		else isCheckBlock[LEFT_1] = false;
+		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_D] = true;
+		else isCheckBlock[LEFT_D] = false;
 		tilePos.y++;
+
 
 		debugPos = Vector2((tileMap->GetTileSize().x * 0.5f - tilePos.x) * tileMap->scale.x,
 			(tileMap->GetTileSize().y * 0.5f - tilePos.y) * tileMap->scale.y);
@@ -70,18 +92,8 @@ void Character::IsBlockUpdate()
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
 		blockCol[1].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_2] = true;
-		else isCheckBlock[LEFT_2] = false;
-		tilePos.y++;
-
-		debugPos = Vector2((tileMap->GetTileSize().x * 0.5f - tilePos.x) * tileMap->scale.x,
-			(tileMap->GetTileSize().y * 0.5f - tilePos.y) * tileMap->scale.y);
-		debugPos *= -1;
-		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
-
-		blockCol[2].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_3] = true;
-		else isCheckBlock[LEFT_3] = false;
+		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_U] = true;
+		else isCheckBlock[LEFT_U] = false;
 
 		pos = col->GetWorldPos() - Vector2(col->scale.x * 0.5f, 0.0f);
 		pos.x++;
@@ -93,7 +105,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[3].SetWorldPos(debugPos);
+		blockCol[2].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[DOWN_L] = true;
 		else isCheckBlock[DOWN_L] = false;
 		pos.y += col->scale.y + 1;
@@ -104,7 +116,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[4].SetWorldPos(debugPos);
+		blockCol[3].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[UP_L] = true;
 		else isCheckBlock[UP_L] = false;
 
@@ -118,29 +130,19 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
+		blockCol[4].SetWorldPos(debugPos);
+		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_D] = true;
+		else isCheckBlock[RIGHT_D] = false;
+		tilePos.y++;
+
+		debugPos = Vector2((tileMap->GetTileSize().x * 0.5f - tilePos.x) * tileMap->scale.x,
+			(tileMap->GetTileSize().y * 0.5f - tilePos.y) * tileMap->scale.y);
+		debugPos *= -1;
+		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
+
 		blockCol[5].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_1] = true;
-		else isCheckBlock[RIGHT_1] = false;
-		tilePos.y++;
-
-		debugPos = Vector2((tileMap->GetTileSize().x * 0.5f - tilePos.x) * tileMap->scale.x,
-			(tileMap->GetTileSize().y * 0.5f - tilePos.y) * tileMap->scale.y);
-		debugPos *= -1;
-		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
-
-		blockCol[6].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_2] = true;
-		else isCheckBlock[RIGHT_2] = false;
-		tilePos.y++;
-
-		debugPos = Vector2((tileMap->GetTileSize().x * 0.5f - tilePos.x) * tileMap->scale.x,
-			(tileMap->GetTileSize().y * 0.5f - tilePos.y) * tileMap->scale.y);
-		debugPos *= -1;
-		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
-
-		blockCol[7].SetWorldPos(debugPos);
-		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_3] = true;
-		else isCheckBlock[RIGHT_3] = false;
+		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_U] = true;
+		else isCheckBlock[RIGHT_U] = false;
 		pos = col->GetWorldPos() + Vector2(col->scale.x * 0.5f, 0.0f);
 		pos.x--;
 		pos.y--;
@@ -151,7 +153,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[8].SetWorldPos(debugPos);
+		blockCol[6].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[DOWN_R] = true;
 		else isCheckBlock[DOWN_R] = false;
 		pos.y += col->scale.y + 1;
@@ -162,20 +164,19 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[9].SetWorldPos(debugPos);
+		blockCol[7].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[UP_R] = true;
 		else isCheckBlock[UP_R] = false;
 
 		/*cout << "------------------------------\n";
 		cout << ' ' << isCheckBlock[UP_L] << isCheckBlock[UP_R] << '\n';
-		cout << isCheckBlock[LEFT_3] << "  " << isCheckBlock[RIGHT_3] << '\n';
-		cout << isCheckBlock[LEFT_2] << "  " << isCheckBlock[RIGHT_2] << '\n';
-		cout << isCheckBlock[LEFT_1] << "  " << isCheckBlock[RIGHT_1] << '\n';
+		cout << isCheckBlock[LEFT_U] << "  " << isCheckBlock[RIGHT_U] << '\n';
+		cout << isCheckBlock[LEFT_D] << "  " << isCheckBlock[RIGHT_D] << '\n';
 		cout << ' ' << isCheckBlock[DOWN_L] << isCheckBlock[DOWN_R] << '\n';
 		cout << "------------------------------\n";*/
-		if (isCheckBlock[LEFT_1] || isCheckBlock[LEFT_2] || isCheckBlock[LEFT_3]) dirCheck.left = true;
+		if (isCheckBlock[LEFT_D] || isCheckBlock[LEFT_U]) dirCheck.left = true;
 		else dirCheck.left = false;
-		if (isCheckBlock[RIGHT_1] || isCheckBlock[RIGHT_2] || isCheckBlock[RIGHT_3]) dirCheck.right = true;
+		if (isCheckBlock[RIGHT_D] || isCheckBlock[RIGHT_U]) dirCheck.right = true;
 		else dirCheck.right = false;
 		if (isCheckBlock[UP_L] || isCheckBlock[UP_R]) dirCheck.up = true;
 		else dirCheck.up = false;
@@ -188,7 +189,7 @@ void Character::IsBlockUpdate()
 void Character::Update()
 {
 	IsBlockUpdate();
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 8; i++) {
 		blockCol[i].Update();
 	}
 }
@@ -200,7 +201,7 @@ void Character::LateUpdate()
 
 void Character::Render()
 {
-	/*for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 8; i++) {
 		blockCol[i].Render();
-	}*/
+	}
 }

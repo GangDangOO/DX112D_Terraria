@@ -32,6 +32,7 @@
     <ClInclude Include="Slime.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tilebuild.h" />
+    <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BackGround.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="Scene1.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="Tilebuild.cpp" />
+    <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

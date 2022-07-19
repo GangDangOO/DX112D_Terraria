@@ -87,10 +87,19 @@ void Scene1::Init()
 	player->col->scale *= size;
 	player->Spawn();
 
+	player->col->Update();
+
 	slime = new Slime(block);
+	slime->playerCol = player->col;
 	slime->bodySprite->scale *= size;
 	slime->col->scale *= size;
-	slime->Spawn();
+	slime->Spawn(player->col->GetWorldPos());
+
+	zombie = new Zombie(block);
+	zombie->playerCol = player->col;
+	zombie->bodySprite->scale *= size;
+	zombie->col->scale *= size;
+	zombie->Spawn();
 
 	CAM->position = player->col->GetWorldPos();
 }
@@ -103,6 +112,8 @@ void Scene1::Release()
 	SafeDelete(wall);
 	SafeDelete(shadow);
 	SafeDelete(player);
+	SafeDelete(slime);
+	SafeDelete(zombie);
 }
 
 void Scene1::Update()
@@ -131,9 +142,10 @@ void Scene1::Update()
 	bg->Update();
 	block->Update();
 	wall->Update();
-	shadow->Update();
 	if (!camMod) player->Update();
 	slime->Update();
+	zombie->Update();
+	shadow->Update();
 }
 
 void Scene1::LateUpdate()
@@ -148,6 +160,7 @@ void Scene1::Render()
 	block->Render();
 	player->Render();
 	slime->Render();
+	zombie->Render();
 	shadow->Render();
 }
 

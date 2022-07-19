@@ -1,11 +1,9 @@
 #pragma once
 enum PHYSICSDIR {
-	LEFT_1,
-	LEFT_2,
-	LEFT_3,
-	RIGHT_1,
-	RIGHT_2,
-	RIGHT_3,
+	LEFT_D,
+	LEFT_U,
+	RIGHT_D,
+	RIGHT_U,
 	DOWN_L,
 	DOWN_R,
 	UP_L,
@@ -31,8 +29,8 @@ public:
 	ObRect* col;
 
 	ObTileMap* tileMap;
-	bool isCheckBlock[10];
-	ObRect blockCol[10];
+	bool isCheckBlock[8];
+	ObRect blockCol[8];
 	Bool4 dirCheck;
 	Vector2 move;
 	Character();

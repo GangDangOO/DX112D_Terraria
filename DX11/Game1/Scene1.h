@@ -13,7 +13,7 @@ private:
 	Tilebuild tb;
 	Player* player;
 	Slime* slime;
-
+	Zombie* zombie;
 	bool camMod;
 public:
 	Scene1();

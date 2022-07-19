@@ -32,6 +32,9 @@
     <ClInclude Include="Slime.h">
       <Filter>GamObject\Character</Filter>
     </ClInclude>
+    <ClInclude Include="Zombie.h">
+      <Filter>GamObject\Character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -62,6 +65,9 @@
       <Filter>GamObject\Character</Filter>
     </ClCompile>
     <ClCompile Include="Slime.cpp">
+      <Filter>GamObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Zombie.cpp">
       <Filter>GamObject\Character</Filter>
     </ClCompile>
   </ItemGroup>
