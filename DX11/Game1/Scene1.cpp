@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#define size 1;
-
 Scene1::Scene1()
 {
 	
@@ -23,9 +21,9 @@ void Scene1::Init()
 	wall = new ObTileMap();
 	shadow = new ObTileMap();
 	mapWall = new MapWall(mapSize);
-	block->scale = Vector2(16.0f, 16.0f) * size;
-	wall->scale = Vector2(16.0f, 16.0f) * size;
-	shadow->scale = Vector2(16.0f, 16.0f) * size;
+	block->scale = Vector2(16.0f, 16.0f) * GAMESIZE;
+	wall->scale = Vector2(16.0f, 16.0f) * GAMESIZE;
+	shadow->scale = Vector2(16.0f, 16.0f) * GAMESIZE;
 	bg = new BackGround(Vector2(mapSize.x * block->scale.x, mapSize.y * block->scale.y));
 	block->SetWorldPos(Vector2(-(mapSize.x * block->scale.x) * 0.5, -(mapSize.y * block->scale.y) * 0.5));
 	block->ResizeTile(mapSize);
@@ -83,23 +81,23 @@ void Scene1::Init()
 	player->mapLight = mapLight;
 	player->shadow = shadow;
 	player->isWall = mapWall->isWall;
-	player->bodySprite->scale *= size;
-	player->col->scale *= size;
+	player->bodySprite->scale *= GAMESIZE;
+	player->col->scale *= GAMESIZE;
 	player->Spawn();
 
 	player->col->Update();
 
 	slime = new Slime(block);
 	slime->playerCol = player->col;
-	slime->bodySprite->scale *= size;
-	slime->col->scale *= size;
+	slime->bodySprite->scale *= GAMESIZE;
+	slime->col->scale *= GAMESIZE;
 	slime->Spawn(player->col->GetWorldPos());
 
 	zombie = new Zombie(block);
 	zombie->playerCol = player->col;
-	zombie->bodySprite->scale *= size;
-	zombie->col->scale *= size;
-	zombie->Spawn();
+	zombie->bodySprite->scale *= GAMESIZE;
+	zombie->col->scale *= GAMESIZE;
+	zombie->Spawn(player->col->GetWorldPos());
 
 	CAM->position = player->col->GetWorldPos();
 }

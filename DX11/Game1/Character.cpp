@@ -9,8 +9,8 @@ Character::Character()
 	col->pivot = OFFSET_B;
 	col->isFilled = false;
 
-	for (int i = 0; i < 10; i++) {
-		blockCol[i].scale = Vector2(16.0f, 16.0f);
+	for (int i = 0; i < 8; i++) {
+		blockCol[i].scale = Vector2(16.0f, 16.0f) * GAMESIZE;
 		blockCol[i].isFilled = false;
 	}
 }
@@ -80,7 +80,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[0].SetWorldPos(debugPos);
+		blockCol[LEFT_D].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_D] = true;
 		else isCheckBlock[LEFT_D] = false;
 		tilePos.y++;
@@ -91,7 +91,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[1].SetWorldPos(debugPos);
+		blockCol[LEFT_U].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[LEFT_U] = true;
 		else isCheckBlock[LEFT_U] = false;
 
@@ -105,7 +105,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[2].SetWorldPos(debugPos);
+		blockCol[DOWN_L].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[DOWN_L] = true;
 		else isCheckBlock[DOWN_L] = false;
 		pos.y += col->scale.y + 1;
@@ -116,7 +116,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[3].SetWorldPos(debugPos);
+		blockCol[UP_L].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[UP_L] = true;
 		else isCheckBlock[UP_L] = false;
 
@@ -130,7 +130,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[4].SetWorldPos(debugPos);
+		blockCol[RIGHT_D].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_D] = true;
 		else isCheckBlock[RIGHT_D] = false;
 		tilePos.y++;
@@ -140,7 +140,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[5].SetWorldPos(debugPos);
+		blockCol[RIGHT_U].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[RIGHT_U] = true;
 		else isCheckBlock[RIGHT_U] = false;
 		pos = col->GetWorldPos() + Vector2(col->scale.x * 0.5f, 0.0f);
@@ -153,7 +153,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[6].SetWorldPos(debugPos);
+		blockCol[DOWN_R].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[DOWN_R] = true;
 		else isCheckBlock[DOWN_R] = false;
 		pos.y += col->scale.y + 1;
@@ -164,7 +164,7 @@ void Character::IsBlockUpdate()
 		debugPos *= -1;
 		debugPos += Vector2(tileMap->scale.x * 0.5f, tileMap->scale.y * 0.5f);
 
-		blockCol[7].SetWorldPos(debugPos);
+		blockCol[UP_R].SetWorldPos(debugPos);
 		if (tileMap->GetTileState(tilePos)) isCheckBlock[UP_R] = true;
 		else isCheckBlock[UP_R] = false;
 
@@ -180,7 +180,10 @@ void Character::IsBlockUpdate()
 		else dirCheck.right = false;
 		if (isCheckBlock[UP_L] || isCheckBlock[UP_R]) dirCheck.up = true;
 		else dirCheck.up = false;
-		if (isCheckBlock[DOWN_L] || isCheckBlock[DOWN_R]) dirCheck.down = true;
+		if (isCheckBlock[DOWN_L] || isCheckBlock[DOWN_R]) {
+			
+			dirCheck.down = true;
+		}
 		else dirCheck.down = false;
 		// cout << dirCheck.left << ' ' << dirCheck.right << ' ' << dirCheck.up << ' ' << dirCheck.down << '\n';
 	}
@@ -189,9 +192,9 @@ void Character::IsBlockUpdate()
 void Character::Update()
 {
 	IsBlockUpdate();
-	for (int i = 0; i < 8; i++) {
+	/*for (int i = 0; i < 8; i++) {
 		blockCol[i].Update();
-	}
+	}*/
 }
 
 void Character::LateUpdate()
@@ -201,7 +204,7 @@ void Character::LateUpdate()
 
 void Character::Render()
 {
-	for (int i = 0; i < 8; i++) {
+	/*for (int i = 0; i < 8; i++) {
 		blockCol[i].Render();
-	}
+	}*/
 }

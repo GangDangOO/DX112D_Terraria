@@ -29,18 +29,26 @@ bool Slime::Fall()
 	if (!dirCheck.down) isFall = true;
 	if (isFall) {
 		atkTime = 0.0f;
-		move.y -= 300 * DELTA;
-	}
+		move.y -= 300 * DELTA * GAMESIZE;
+	}else if (move.y < 0.0f) move = Vector2(0.0f, 0.0f);
 	return isFall;
 }
 
 bool Slime::Jump()
 {
 	bool isJump = false;
-	float dist = playerCol->GetWorldPos().x - col->GetWorldPos().x;
-	if (dist >= 100.0f) dist = 100.0f;
-	else if (dist <= -100.0f) dist = -100.0f;
-	move = Vector2(dist, 200.0f);
+	float dist = (playerCol->GetWorldPos().x - col->GetWorldPos().x) * GAMESIZE;
+	float maxDist = 100.0f * GAMESIZE;
+	if (dist > maxDist) {
+		dist = maxDist;
+	}
+	else if (dist < -maxDist) {
+		dist = -maxDist;
+	}
+	float jumpPower = 200.0f * GAMESIZE;
+	move = Vector2(dist, jumpPower);
+	if (move.x > 0.0f && dirCheck.right) move.x *= -1.0f;
+	if (move.x < 0.0f && dirCheck.left) move.x *= -1.0f;
 	return isJump;
 }
 
@@ -56,7 +64,7 @@ void Slime::Update()
 		Jump();
 	}
 	else if (atkTime >= 2.7f)
-		bodySprite->aniInterval = 0.1f;
+		bodySprite->aniInterval = 0.05f;
 	else
 		bodySprite->aniInterval = 0.5f;
 	col->MoveWorldPos(move * DELTA);
@@ -64,9 +72,6 @@ void Slime::Update()
 	col->Update();
 	bodySprite->Update();
 
-	if (move.x >= 0.0f && dirCheck.right) move.x = 0.0f;
-	if (move.x <= 0.0f && dirCheck.left) move.x = 0.0f;
-	if (dirCheck.down && move.y <= 0.0f) move = Vector2(0.0f, 0.0f);
 }
 
 void Slime::Render()

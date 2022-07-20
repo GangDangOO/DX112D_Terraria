@@ -20,6 +20,7 @@ struct Status
 	int hp;
 	int def;
 	int atk;
+	int knockBack;
 };
 class Character
 {

@@ -13,8 +13,8 @@ Player::Player(ObTileMap* _tileMap)
 
 	anim = ANIM::IDLE;
 
-	playerMaxSpeed = 100.0f;
-	playerBoostSpeed = 300.0f;
+	playerMaxSpeed = 100.0f * GAMESIZE;
+	playerBoostSpeed = 300.0f * GAMESIZE;
 	move = Vector2(0.0f, 0.0f);
 
 	jumpTime = 0.0f;
@@ -106,13 +106,15 @@ bool Player::fall()
 	jumpTime -= DELTA;
 	if (dirCheck.up && move.y > 0.0f) move.y = 0.0f;
 	if (!dirCheck.down) isFall = true;
-	else if (jumpTime < 0.0f) {
+	else if (jumpTime <= 0.0f) {
 		move.y = 0.0f;
 	}
-	if (isFall) move.y -= DELTA * 300.0f;
+	if (isFall) {
+		move.y -= DELTA * 300.0f * GAMESIZE;
+	}
 	else if (INPUT->KeyDown(VK_SPACE)) {
 		jumpTime = 0.2f;
-		move.y = 200.0f;
+		move.y = 200.0f * GAMESIZE;
 	}
 	return isFall;
 }
