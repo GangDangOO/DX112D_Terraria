@@ -2,6 +2,11 @@
 
 Player::Player(ObTileMap* _tileMap)
 {
+	stat.atk = 0;
+	stat.def = 0;
+	stat.hp = 100;
+	stat.knockBack = 0;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"BestiaryGirl_Default.png");
@@ -11,6 +16,69 @@ Player::Player(ObTileMap* _tileMap)
 	bodySprite->SetParentRT(*col);
 	bodySprite->pivot = col->pivot;
 
+	goreSprite[0] = new ObImage(L"Gore_1219.png");
+	goreSprite[0]->maxFrame = Int2(1, 1);
+	goreSprite[0]->scale = Vector2(24.0f, 26.0f);
+	goreSprite[0]->pivot = col->pivot;
+
+	goreSprite[1] = new ObImage(L"Gore_1220.png");
+	goreSprite[1]->maxFrame = Int2(1, 1);
+	goreSprite[1]->scale = Vector2(12.0f, 8.0f);
+	goreSprite[1]->pivot = col->pivot;
+
+	goreSprite[2] = new ObImage(L"Gore_1221.png");
+	goreSprite[2]->maxFrame = Int2(1, 1);
+	goreSprite[2]->scale = Vector2(16.0f, 10.0f);
+	goreSprite[2]->pivot = col->pivot;
+
+	goreSprite[3] = new ObImage(L"Gore_1222.png");
+	goreSprite[3]->maxFrame = Int2(1, 1);
+	goreSprite[3]->scale = Vector2(10.0f, 14.0f);
+	goreSprite[3]->pivot = col->pivot;
+
+	pick = new ObImage(L"Item_1.png");
+	pick->scale = Vector2(32.0f, 32.0f);
+	pick->SetParentRT(*col);
+	pick->visible = false;
+
+	dirt = new ObImage(L"Item_2.png");
+	dirt->scale = Vector2(16.0f, 16.0f);
+	dirt->visible = false;
+	dirt->SetParentRT(*col);
+
+	rock = new ObImage(L"Item_3.png");
+	rock->scale = Vector2(16.0f, 16.0f);
+	rock->visible = false;
+	rock->SetParentRT(*col);
+
+	sword = new ObImage(L"Item_4.png");
+	sword->scale = Vector2(32.0f, 32.0f);
+	sword->visible = false;
+	sword->SetParentRT(*col);
+
+	touch = new ObImage(L"Item_8.png");
+	touch->scale = Vector2(14.0f, 16.0f);
+	touch->visible = false;
+	touch->SetParentRT(*col);
+
+	bow = new ObImage(L"Item_99.png");
+	bow->scale = Vector2(16.0f, 32.0f);
+	bow->visible = false;
+	bow->SetParentRT(*col);
+	bow->MoveWorldPos(Vector2(0.0f, bodySprite->scale.y * 0.4f));
+
+	boss_Spawner = new ObImage(L"Item_43.png");
+	boss_Spawner->scale = Vector2(30.0f, 20.0f);
+	boss_Spawner->visible = false;
+	boss_Spawner->SetParentRT(*col);
+
+	for (int i = 0; i < 10; i++) {
+		arrow[i] = new ObImage(L"Item_40.png");
+		arrow[i]->scale = Vector2(14.0f, 32.0f);
+		arrow[i]->SetParentRT(*col);
+		arrow[i]->visible = false;
+	}
+
 	anim = ANIM::IDLE;
 
 	playerMaxSpeed = 100.0f * GAMESIZE;
@@ -18,6 +86,7 @@ Player::Player(ObTileMap* _tileMap)
 	move = Vector2(0.0f, 0.0f);
 
 	jumpTime = 0.0f;
+	atkTime = 0.0f;
 	blockMiningTime = 0.0f;
 }
 
@@ -28,6 +97,7 @@ Player::~Player()
 
 void Player::Action()
 {
+	atkTime -= DELTA;
 	ChangeSlot();
 	UseItem();
 	Run();
@@ -67,14 +137,15 @@ void Player::ChangeStat(ANIM stat)
 bool Player::Run()
 {
 	bool isMove = false;
-	// your now get check left and right phisics
 	if (INPUT->KeyPress('A') && !dirCheck.left) {
 		ChangeStat(ANIM::MOVE);
 		move.x -= playerBoostSpeed * DELTA;
 		isMove = true;
 		bodySprite->reverseLR = false;
+		bow->reverseLR = true;
+		bow->SetWorldPosX(col->GetWorldPos().x - 10);
 	}
-	else if (move.x < 0.0f) {
+	else if (move.x < 0.0f && invincibilityTime <= 0.1f) {
 		move.x = 0.0f;
 	}
 	else if (INPUT->KeyPress('D') && !dirCheck.right) {
@@ -82,8 +153,10 @@ bool Player::Run()
 		move.x += playerBoostSpeed * DELTA;
 		isMove = true;
 		bodySprite->reverseLR = true;
+		bow->reverseLR = false;
+		bow->SetWorldPosX(col->GetWorldPos().x + 10);
 	}
-	else if (move.x > 0.0f) {
+	else if (move.x > 0.0f && invincibilityTime <= 0.1f) {
 		move.x = 0.0f;
 	}
 	else {
@@ -106,7 +179,7 @@ bool Player::fall()
 	jumpTime -= DELTA;
 	if (dirCheck.up && move.y > 0.0f) move.y = 0.0f;
 	if (!dirCheck.down) isFall = true;
-	else if (jumpTime <= 0.0f) {
+	else if (jumpTime <= 0.0f && invincibilityTime <= 0.4f) {
 		move.y = 0.0f;
 	}
 	if (isFall) {
@@ -148,10 +221,10 @@ bool Player::UseItem()
 							mapLight->SpreadLight(Int2(j, i), tileMap, shadow);
 						}
 					}
+					tileMap->UpdateSub();
+					shadow->UpdateSub();
 				}
 			}
-			tileMap->UpdateSub();
-			shadow->UpdateSub();
 			break;
 		case ITEM::TOUCH:
 			if (tileMousePos.x > 0 && tileMousePos.x < tileMap->GetTileSize().x &&
@@ -169,10 +242,10 @@ bool Player::UseItem()
 							mapLight->SpreadLight(Int2(j, i), tileMap, shadow);
 						}
 					}
+					tileMap->UpdateSub();
+					shadow->UpdateSub();
 				}
 			}
-			tileMap->UpdateSub();
-			shadow->UpdateSub();
 			break;
 		case ITEM::PICK:
 			if (tileMousePos.x > 0 && tileMousePos.x < tileMap->GetTileSize().x &&
@@ -194,24 +267,41 @@ bool Player::UseItem()
 									mapLight->SpreadLight(Int2(j, i), tileMap, shadow);
 								}
 							}
+							tileMap->UpdateSub();
+							shadow->UpdateSub();
 						}
 					}
 				}
 			}
-			tileMap->UpdateSub();
-			shadow->UpdateSub();
 			break;
 		case ITEM::SWORD:
+			if (atkTime < 0.0f) {
+
+			}
 			break;
 		case ITEM::BOW:
+			if (atkTime < 0.0f) {
+				atkTime = 1.0f;
+				bodySprite->ChangeAnim(ANISTATE::STOP, 0.1f, false);
+				bodySprite->frame.y = 21;
+				bow->visible = true;
+			}
 			break;
 		case ITEM::MAGIC:
+			if (atkTime < 0.0f) {
+
+			}
 			break;
 		default:
 			break;
 		}
 	}
-	else if (anim != ANIM::MOVE) ChangeStat(ANIM::IDLE);
+	else if (anim != ANIM::MOVE){
+		ChangeStat(ANIM::IDLE);
+	}
+	if (atkTime < 0.0f) {
+		if (bow->visible) bow->visible = false;
+	}
 
 	if (isUse && bodySprite->frame.y == 0) bodySprite->frame.y = 20;
 	return isUse;
@@ -231,16 +321,33 @@ void Player::ChangeSlot()
 void Player::Update()
 {
 	Character::Update();
-	Action();
-	col->Update();
-	bodySprite->Update();
+	if (!isDead) {
+		Action();
+		col->Update();
+		bodySprite->Update();
+		bow->Update();
+		for (int i = 0; i < 10; i++) {
+			arrow[i]->Update();
+		}
+	}
 }
 
 
 void Player::Render()
 {
 	Character::Render();
-	bodySprite->Render();
+	if (!isDead) {
+		bodySprite->Render();
+		bow->Render();
+		for (int i = 0; i < 10; i++) {
+			arrow[i]->Render();
+		}
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			goreSprite[i]->Render();
+		}
+	}
 	/*col->Render();*/
 }
 

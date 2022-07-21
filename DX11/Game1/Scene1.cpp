@@ -18,6 +18,7 @@ void Scene1::Init()
 	map = new Map(mapSize, seed);
 	mapLight = new MapLight(mapSize);
 	block = new ObTileMap();
+	map->tileMap = block;
 	wall = new ObTileMap();
 	shadow = new ObTileMap();
 	mapWall = new MapWall(mapSize);
@@ -136,10 +137,18 @@ void Scene1::Update()
 	else {
 		CAM->position = player->col->GetWorldPos();
 	}
+	// Hit Player
+	if (slime->col->Intersect(player->col)) {
+		player->Hit(slime->stat, slime->col->GetWorldPos());
+	}
+	if (zombie->col->Intersect(player->col)) {
+		player->Hit(zombie->stat, zombie->col->GetWorldPos());
+	}
 
 	bg->Update();
-	block->Update();
 	wall->Update();
+	block->Update();
+	map->Update();
 	if (!camMod) player->Update();
 	slime->Update();
 	zombie->Update();
@@ -156,6 +165,7 @@ void Scene1::Render()
 	bg->Render();
 	wall->Render();
 	block->Render();
+	map->Render();
 	player->Render();
 	slime->Render();
 	zombie->Render();

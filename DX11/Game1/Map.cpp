@@ -86,6 +86,19 @@ Map::Map(Int2 MapSize, unsigned int Seed)
 			}
 		}
 	}
+
+	for (int i = 0; i < 5; i++) {
+		dirt[i] = new ObImage(L"Tiles_0.png");
+		dirt[i]->maxFrame = Int2(16, 15);
+		dirt[i]->frame = Int2(0, 5);
+		dirt[i]->scale = Vector2(4, 4);
+
+		rock[i] = new ObImage(L"Tiles_1.png");
+		rock[i]->maxFrame = Int2(16, 15);
+		rock[i]->frame = Int2(0, 5);
+		rock[i]->scale = Vector2(4, 4);
+	}
+	visibleTime = 0.0f;
 }
 
 Map::~Map()
@@ -100,12 +113,45 @@ void Map::Release()
 	}
 	SafeDelete(type);
 	SafeDelete(blockHp);
+	for (int i = 0; i < 5; i++) {
+		SafeDelete(dirt[i]);
+		SafeDelete(rock[i]);
+	}
 }
 
 void Map::Update()
 {
+	visibleTime -= DELTA;
+	if (visibleTime < 0.0f) {
+		if (dirt[0]->visible) {
+			for (int i = 0; i < 5; i++) {
+				dirt[i]->visible = false;
+			}
+		}
+		if (rock[0]->visible) {
+			for (int i = 0; i < 5; i++) {
+				rock[i]->visible = false;
+			}
+		}
+	}
+	else {
+		if (dirt[0]->visible) {
+			for (int i = 0; i < 5; i++) {
+				dirt[i]->MoveWorldPos(Vector2(-50 + i * 30, -50.0f) * DELTA);
+			}
+		}
+		if (rock[0]->visible) {
+			for (int i = 0; i < 5; i++) {
+				rock[i]->MoveWorldPos(Vector2(-50 + i * 30, -50.0f) * DELTA);
+			}
+		}
+	}
 	if (INPUT->KeyDown('Q')) {
 		isRectVisible = !isRectVisible;
+	}
+	for (int i = 0; i < 5; i++) {
+		dirt[i]->Update();
+		rock[i]->Update();
 	}
 }
 
@@ -116,13 +162,45 @@ void Map::LateUpdate()
 
 void Map::Render()
 {
-	
+	for (int i = 0; i < 5; i++) {
+		dirt[i]->Render();
+		rock[i]->Render();
+	}
 }
 
 bool Map::MiningBlock(Int2 pos)
 {
 	bool isDelete = false;
 	blockHp[pos.y][pos.x]--;
+	if (type[pos.y][pos.x] == DIRT) {
+		Int2 intpos;
+		Vector2 blockPos = INPUT->GetMouseWorldPos();
+		tileMap->WorldPosToTileIdx(blockPos, intpos);
+		intpos = Int2(tileSize.x * 0.5 - intpos.x, tileSize.y * 0.5 - intpos.y);
+		blockPos = Vector2(intpos.x * 16, intpos.y * 16);
+		blockPos *= -1;
+		blockPos.y += 8;
+		for (int i = 0; i < 5; i++) {
+			dirt[i]->SetWorldPos(blockPos);
+			dirt[i]->Update();
+			dirt[i]->visible = true;
+			
+		}
+	}
+	else if (type[pos.y][pos.x] == ROCK) {
+		Int2 intpos;
+		Vector2 blockPos = INPUT->GetMouseWorldPos();
+		intpos = Int2(tileSize.x * 0.5 - intpos.x, tileSize.y * 0.5 - intpos.y);
+		blockPos = Vector2(intpos.x * 16, intpos.y * 16);
+		blockPos *= -1;
+		blockPos.y += 8;
+		for (int i = 0; i < 5; i++) {
+			rock[i]->SetWorldPos(blockPos);
+			rock[i]->Update();
+			rock[i]->visible = true;
+		}
+	}
+	visibleTime = 0.5f;
 	if (blockHp[pos.y][pos.x] <= 0) isDelete = true;
 	return isDelete;
 }

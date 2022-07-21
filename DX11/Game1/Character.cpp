@@ -13,6 +13,8 @@ Character::Character()
 		blockCol[i].scale = Vector2(16.0f, 16.0f) * GAMESIZE;
 		blockCol[i].isFilled = false;
 	}
+	invincibilityTime = 0.0f;
+	isDead = false;
 }
 
 Character::~Character()
@@ -191,10 +193,17 @@ void Character::IsBlockUpdate()
 
 void Character::Update()
 {
-	IsBlockUpdate();
-	/*for (int i = 0; i < 8; i++) {
-		blockCol[i].Update();
-	}*/
+
+	if (!isDead) {
+		invincibilityTime -= DELTA;
+		IsBlockUpdate();
+		/*for (int i = 0; i < 8; i++) {
+			blockCol[i].Update();
+		}*/
+	}
+	else {
+		Dead();
+	}
 }
 
 void Character::LateUpdate()
@@ -204,7 +213,46 @@ void Character::LateUpdate()
 
 void Character::Render()
 {
+	if (isDead) {
+		for (int i = 0; i < 4; i++) {
+			goreSprite[i]->Update();
+		}
+	}
 	/*for (int i = 0; i < 8; i++) {
 		blockCol[i].Render();
 	}*/
+}
+
+void Character::Dead()
+{
+	for (int i = 0; i < 4; i++) {
+		move.y -= 100 * DELTA;
+		if (move.x > 0.0f) move + Vector2(i * 2.0f, 100 + (i * 75.0f));
+		else if (move.x > 0.0f) move + Vector2(i * -2.0f, 100 + (i * 75.0f));
+		goreSprite[i]->MoveWorldPos(move * DELTA);
+		goreSprite[i]->rotation += ToRadian * DELTA * 180;
+		goreSprite[i]->Update();
+	}
+}
+
+void Character::Hit(Status enemyStat, Vector2 enemyCol)
+{
+	if (invincibilityTime <= 0.0f && !isDead) {
+		int dmg = enemyStat.atk - stat.def;
+		if (dmg <= 0) dmg = 1;
+		stat.hp -= dmg;
+		int knock = ((100 + dmg) - ((100 + dmg) * stat.knockBack)) * GAMESIZE;
+		if (col->GetWorldPos().x < enemyCol.x) move.x -= knock * 2;
+		else if (col->GetWorldPos().x > enemyCol.x) move.x += knock * 2;
+		move.y += knock;
+		if (stat.hp <= 0) {
+			for (int i = 0; i < 4; i++) {
+				move.y = 0.0f;
+				goreSprite[i]->SetWorldPos(col->GetWorldPos());
+			}
+			isDead = true;
+		}
+		invincibilityTime = 0.66f;
+		cout << stat.hp << '\n';
+	}
 }

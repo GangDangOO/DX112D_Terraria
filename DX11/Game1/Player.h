@@ -31,6 +31,18 @@ public:
 	bool** isWall;
 	ITEM	itemSlot;
 	ANIM anim;
+
+	ObImage* pick;
+	ObImage* dirt;
+	ObImage* rock;
+	ObImage* sword;
+	ObImage* touch;
+	ObImage* bow;
+	ObImage* boss_Spawner;
+	ObImage* arrow[10];
+
+	float atkTime;
+
 	Player(ObTileMap* _tileMap);
 	~Player();
 	void Action();

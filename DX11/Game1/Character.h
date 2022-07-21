@@ -20,14 +20,17 @@ struct Status
 	int hp;
 	int def;
 	int atk;
-	int knockBack;
+	float knockBack;
 };
 class Character
 {
 public:
-	Status stat;
+	float	invincibilityTime;
+	bool	isDead;
+	Status	stat;
 	ObImage* bodySprite;
-	ObRect* col;
+	ObImage* goreSprite[4];
+	ObRect*	col;
 
 	ObTileMap* tileMap;
 	bool isCheckBlock[8];
@@ -42,5 +45,7 @@ public:
 	void Update();
 	void LateUpdate();
 	void Render();
+	void Dead();
+	void Hit(Status enemyStat, Vector2 enemyCol);
 };
 

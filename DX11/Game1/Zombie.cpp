@@ -2,6 +2,11 @@
 
 Zombie::Zombie(ObTileMap* _tileMap)
 {
+	stat.atk = 14;
+	stat.def = 6;
+	stat.hp = 45;
+	stat.knockBack = 0.5f;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"NPC_3.png");
@@ -10,6 +15,21 @@ Zombie::Zombie(ObTileMap* _tileMap)
 	col->scale = bodySprite->scale;
 	bodySprite->SetParentRT(*col);
 	bodySprite->pivot = col->pivot;
+
+	goreSprite[0] = new ObImage(L"Gore_3.png");
+	goreSprite[0]->maxFrame = Int2(1, 1);
+	goreSprite[0]->scale = Vector2(26.0f, 30.0f);
+	goreSprite[0]->pivot = col->pivot;
+
+	goreSprite[1] = new ObImage(L"Gore_4.png");
+	goreSprite[1]->maxFrame = Int2(1, 1);
+	goreSprite[1]->scale = Vector2(22.0f, 14.0f);
+	goreSprite[1]->pivot = col->pivot;
+
+	goreSprite[2] = new ObImage(L"Gore_5.png");
+	goreSprite[2]->maxFrame = Int2(1, 1);
+	goreSprite[2]->scale = Vector2(22.0f, 20.0f);
+	goreSprite[2]->pivot = col->pivot;
 
 	bodySprite->ChangeAnim(ANISTATE::LOOP, 0.2f, false);
 
@@ -64,30 +84,34 @@ bool Zombie::Move()
 
 void Zombie::Update()
 {
-	bool isFall;
 	Character::Update();
-	jumpTime -= DELTA;
-	Move();
-	isFall = Fall();
+	if (!isDead) {
+		bool isFall;
+		jumpTime -= DELTA;
+		Move();
+		isFall = Fall();
 
-	if (col->GetWorldPos().x - playerCol->GetWorldPos().x > -10.0f && col->GetWorldPos().x - playerCol->GetWorldPos().x < 10.0f) {
-		if (col->GetWorldPos().y < playerCol->GetWorldPos().y && !isFall) Jump();
+		if (col->GetWorldPos().x - playerCol->GetWorldPos().x > -10.0f && col->GetWorldPos().x - playerCol->GetWorldPos().x < 10.0f) {
+			if (col->GetWorldPos().y < playerCol->GetWorldPos().y && !isFall) Jump();
+		}
+		if (move.x > 0.0f && dirCheck.right){
+			if (!isFall) Jump();
+			move.x = 0.0f;
+		}
+		if (move.x < 0.0f && dirCheck.left) {
+			if (!isFall) Jump();
+			move.x = 0.0f;
+		}
+		col->MoveWorldPos(move * DELTA);
+		col->Update();
+		bodySprite->Update();
 	}
-	if (move.x > 0.0f && dirCheck.right){
-		if (!isFall) Jump();
-		move.x = 0.0f;
-	}
-	if (move.x < 0.0f && dirCheck.left) {
-		if (!isFall) Jump();
-		move.x = 0.0f;
-	}
-	col->MoveWorldPos(move * DELTA);
-	col->Update();
-	bodySprite->Update();
 }
 
 void Zombie::Render()
 {
 	Character::Render();
-	bodySprite->Render();
+	if (!isDead) {
+		bodySprite->Render();
+	}
 }

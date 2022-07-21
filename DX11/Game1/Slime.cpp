@@ -2,6 +2,11 @@
 
 Slime::Slime(ObTileMap* _tileMap)
 {
+	stat.atk = 6;
+	stat.def = 0;
+	stat.hp = 14;
+	stat.knockBack = -0.2f;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"NPC_1.png");
@@ -54,23 +59,25 @@ bool Slime::Jump()
 
 void Slime::Update()
 {
-	atkTime += DELTA;
 	Character::Update();
+	if (!isDead) {
+		atkTime += DELTA;
 
-	Fall();
-	if (atkTime >= 3.0f) {
-		atkTime = 0.0f;
-		bodySprite->aniInterval = 0.5f;
-		Jump();
+		Fall();
+		if (atkTime >= 3.0f) {
+			atkTime = 0.0f;
+			bodySprite->aniInterval = 0.5f;
+			Jump();
+		}
+		else if (atkTime >= 2.7f)
+			bodySprite->aniInterval = 0.05f;
+		else
+			bodySprite->aniInterval = 0.5f;
+		col->MoveWorldPos(move * DELTA);
+
+		col->Update();
+		bodySprite->Update();
 	}
-	else if (atkTime >= 2.7f)
-		bodySprite->aniInterval = 0.05f;
-	else
-		bodySprite->aniInterval = 0.5f;
-	col->MoveWorldPos(move * DELTA);
-
-	col->Update();
-	bodySprite->Update();
 
 }
 
