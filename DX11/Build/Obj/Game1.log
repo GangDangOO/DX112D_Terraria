@@ -1,35 +1,4 @@
-﻿  BackGround.cpp
-  Character.cpp
-  Main.cpp
-  Map.cpp
-  MapLight.cpp
-  MapWall.cpp
-  OpenSimplexNoise.cpp
-  Player.cpp
-  Scene1.cpp
-  Slime.cpp
-  Tilebuild.cpp
+﻿  Slime.cpp
   Zombie.cpp
-D:\one_month\DX11\Game1\Character.cpp(33,82): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Character.cpp(33,44): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Character.cpp(59,82): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Character.cpp(59,44): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Character.cpp(244,13): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(140,39): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(145,39): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(179,63): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(179,34): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(180,46): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(180,31): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(193,63): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(193,34): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(194,46): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Map.cpp(194,31): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(29,96): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(29,59): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(31,93): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(31,57): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(33,95): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\one_month\DX11\Game1\Scene1.cpp(33,59): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      D:\one_month\DX11\\Build\Game1.lib 라이브러리 및 D:\one_month\DX11\\Build\Game1.exp 개체를 생성하고 있습니다.
   Game1.vcxproj -> D:\one_month\DX11\Build\Game1.exe

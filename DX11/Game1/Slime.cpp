@@ -84,5 +84,5 @@ void Slime::Update()
 void Slime::Render()
 {
 	Character::Render();
-	bodySprite->Render();
+	if (!isDead) bodySprite->Render();
 }

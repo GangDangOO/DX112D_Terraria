@@ -138,11 +138,18 @@ void Scene1::Update()
 		CAM->position = player->col->GetWorldPos();
 	}
 	// Hit Player
-	if (slime->col->Intersect(player->col)) {
+	if (!slime->isDead && slime->col->Intersect(player->col)) {
 		player->Hit(slime->stat, slime->col->GetWorldPos());
 	}
-	if (zombie->col->Intersect(player->col)) {
+	if (!zombie->isDead && zombie->col->Intersect(player->col)) {
 		player->Hit(zombie->stat, zombie->col->GetWorldPos());
+	}
+	// Hit Enemy
+	if (player->colSword->Intersect(slime->col)) {
+		slime->Hit(player->stat, player->col->GetWorldPos());
+	}
+	if (player->colSword->Intersect(zombie->col)) {
+		zombie->Hit(player->stat, player->col->GetWorldPos());
 	}
 
 	bg->Update();

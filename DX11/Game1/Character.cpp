@@ -215,7 +215,7 @@ void Character::Render()
 {
 	if (isDead) {
 		for (int i = 0; i < 4; i++) {
-			goreSprite[i]->Update();
+			if (goreSprite[i] != nullptr) goreSprite[i]->Update();
 		}
 	}
 	/*for (int i = 0; i < 8; i++) {
@@ -229,9 +229,11 @@ void Character::Dead()
 		move.y -= 100 * DELTA;
 		if (move.x > 0.0f) move + Vector2(i * 2.0f, 100 + (i * 75.0f));
 		else if (move.x > 0.0f) move + Vector2(i * -2.0f, 100 + (i * 75.0f));
-		goreSprite[i]->MoveWorldPos(move * DELTA);
-		goreSprite[i]->rotation += ToRadian * DELTA * 180;
-		goreSprite[i]->Update();
+		if (goreSprite[i] != nullptr) {
+			goreSprite[i]->MoveWorldPos(move * DELTA);
+			goreSprite[i]->rotation += ToRadian * DELTA * 180;
+			goreSprite[i]->Update();
+		}
 	}
 }
 
@@ -248,7 +250,7 @@ void Character::Hit(Status enemyStat, Vector2 enemyCol)
 		if (stat.hp <= 0) {
 			for (int i = 0; i < 4; i++) {
 				move.y = 0.0f;
-				goreSprite[i]->SetWorldPos(col->GetWorldPos());
+				if (goreSprite[i] != nullptr) goreSprite[i]->SetWorldPos(col->GetWorldPos());
 			}
 			isDead = true;
 		}

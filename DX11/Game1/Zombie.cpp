@@ -106,6 +106,11 @@ void Zombie::Update()
 		col->Update();
 		bodySprite->Update();
 	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			if (goreSprite[i] != nullptr) goreSprite[i]->Update();
+		}
+	}
 }
 
 void Zombie::Render()
@@ -113,5 +118,10 @@ void Zombie::Render()
 	Character::Render();
 	if (!isDead) {
 		bodySprite->Render();
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			if (goreSprite[i] != nullptr) goreSprite[i]->Render();
+		}
 	}
 }

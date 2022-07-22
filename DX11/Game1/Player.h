@@ -36,6 +36,7 @@ public:
 	ObImage* dirt;
 	ObImage* rock;
 	ObImage* sword;
+	ObRect* colSword;
 	ObImage* touch;
 	ObImage* bow;
 	ObImage* boss_Spawner;
