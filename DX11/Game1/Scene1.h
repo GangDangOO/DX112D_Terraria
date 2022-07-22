@@ -12,8 +12,8 @@ private:
 	BackGround* bg;
 	Tilebuild tb;
 	Player* player;
-	Slime* slime;
-	Zombie* zombie;
+	Slime* slime[5];
+	Zombie* zombie[5];
 	bool camMod;
 public:
 	Scene1();

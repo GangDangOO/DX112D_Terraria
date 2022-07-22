@@ -187,7 +187,7 @@ bool Map::MiningBlock(Int2 pos)
 			
 		}
 	}
-	else if (type[pos.y][pos.x] == ROCK) {
+	if (type[pos.y][pos.x] == ROCK) {
 		Int2 intpos;
 		Vector2 blockPos = INPUT->GetMouseWorldPos();
 		intpos = Int2(tileSize.x * 0.5 - intpos.x, tileSize.y * 0.5 - intpos.y);

@@ -41,7 +41,10 @@ public:
 	ObImage* bow;
 	ObImage* boss_Spawner;
 	ObImage* arrow[10];
+	ObRect* colArrow[10];
+	Vector2	 arrowPos[10];
 
+	bool  isAtk;
 	float atkTime;
 
 	Player(ObTileMap* _tileMap);

@@ -88,17 +88,19 @@ void Scene1::Init()
 
 	player->col->Update();
 
-	slime = new Slime(block);
-	slime->playerCol = player->col;
-	slime->bodySprite->scale *= GAMESIZE;
-	slime->col->scale *= GAMESIZE;
-	slime->Spawn(player->col->GetWorldPos());
+	for (int i = 0; i < 5; i++) {
+		slime[i] = new Slime(block);
+		slime[i]->playerCol = player->col;
+		slime[i]->bodySprite->scale *= GAMESIZE;
+		slime[i]->col->scale *= GAMESIZE;
+		slime[i]->Spawn(player->col->GetWorldPos() + Vector2(i * 20, 0.0f));
 
-	zombie = new Zombie(block);
-	zombie->playerCol = player->col;
-	zombie->bodySprite->scale *= GAMESIZE;
-	zombie->col->scale *= GAMESIZE;
-	zombie->Spawn(player->col->GetWorldPos());
+		zombie[i] = new Zombie(block);
+		zombie[i]->playerCol = player->col;
+		zombie[i]->bodySprite->scale *= GAMESIZE;
+		zombie[i]->col->scale *= GAMESIZE;
+		zombie[i]->Spawn(player->col->GetWorldPos() + Vector2(i * 20, 0.0f));
+	}
 
 	CAM->position = player->col->GetWorldPos();
 }
@@ -111,8 +113,10 @@ void Scene1::Release()
 	SafeDelete(wall);
 	SafeDelete(shadow);
 	SafeDelete(player);
-	SafeDelete(slime);
-	SafeDelete(zombie);
+	for (int i = 0; i < 5; i++) {
+		SafeDelete(slime[i]);
+		SafeDelete(zombie[i]);
+	}
 }
 
 void Scene1::Update()
@@ -138,27 +142,46 @@ void Scene1::Update()
 		CAM->position = player->col->GetWorldPos();
 	}
 	// Hit Player
-	if (!slime->isDead && slime->col->Intersect(player->col)) {
-		player->Hit(slime->stat, slime->col->GetWorldPos());
+	for (int i = 0; i < 5; i++) {
+		if (!slime[i]->isDead && slime[i]->col->Intersect(player->col)) {
+			player->Hit(slime[i]->stat, slime[i]->col->GetWorldPos());
+		}
+		if (!zombie[i]->isDead && zombie[i]->col->Intersect(player->col)) {
+			player->Hit(zombie[i]->stat, zombie[i]->col->GetWorldPos());
+		}
+		// Hit Enemy
+		if (!slime[i]->isDead && player->isAtk && player->colSword->Intersect(slime[i]->col)) {
+			slime[i]->Hit(player->stat, player->col->GetWorldPos());
+		}
+		if (!zombie[i]->isDead && player->isAtk && player->colSword->Intersect(zombie[i]->col)) {
+			zombie[i]->Hit(player->stat, player->col->GetWorldPos());
+		}
 	}
-	if (!zombie->isDead && zombie->col->Intersect(player->col)) {
-		player->Hit(zombie->stat, zombie->col->GetWorldPos());
+	for (int i = 0; i < 10; i++) {
+		if (player->arrow[i]->visible) {
+			for (int j = 0; j < 5; j++) {
+				if (!slime[j]->isDead && player->colArrow[i]->Intersect(slime[j]->col)) {
+					slime[j]->Hit(player->stat, player->colArrow[i]->GetWorldPos());
+					player->arrowPos[i] = Vector2(0.0f, 0.0f);
+					player->arrow[i]->visible = false;
+				}
+				if (!zombie[j]->isDead && player->colArrow[i]->Intersect(zombie[j]->col)) {
+					zombie[j]->Hit(player->stat, player->colArrow[i]->GetWorldPos());
+					player->arrowPos[i] = Vector2(0.0f, 0.0f);
+					player->arrow[i]->visible = false;
+				}
+			}
+		}
 	}
-	// Hit Enemy
-	if (player->colSword->Intersect(slime->col)) {
-		slime->Hit(player->stat, player->col->GetWorldPos());
-	}
-	if (player->colSword->Intersect(zombie->col)) {
-		zombie->Hit(player->stat, player->col->GetWorldPos());
-	}
-
 	bg->Update();
 	wall->Update();
 	block->Update();
 	map->Update();
 	if (!camMod) player->Update();
-	slime->Update();
-	zombie->Update();
+	for (int i = 0; i < 5; i++) {
+		slime[i]->Update();
+		zombie[i]->Update();
+	}
 	shadow->Update();
 }
 
@@ -174,8 +197,10 @@ void Scene1::Render()
 	block->Render();
 	map->Render();
 	player->Render();
-	slime->Render();
-	zombie->Render();
+	for (int i = 0; i < 5; i++) {
+		slime[i]->Render();
+		zombie[i]->Render();
+	}
 	shadow->Render();
 }
 

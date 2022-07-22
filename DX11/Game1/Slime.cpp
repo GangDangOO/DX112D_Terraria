@@ -4,7 +4,7 @@ Slime::Slime(ObTileMap* _tileMap)
 {
 	stat.atk = 6;
 	stat.def = 0;
-	stat.hp = 14;
+	stat.hp = 24;
 	stat.knockBack = -0.2f;
 
 	tileMap = _tileMap;
@@ -15,6 +15,12 @@ Slime::Slime(ObTileMap* _tileMap)
 	col->scale = bodySprite->scale;
 	bodySprite->SetParentRT(*col);
 	bodySprite->pivot = col->pivot;
+
+	goreSprite[0] = new ObImage(L"NPC_1.png");
+	goreSprite[0]->scale = bodySprite->scale;
+	goreSprite[0]->maxFrame = Int2(1, 2);
+	goreSprite[0]->frame = Int2(0, 0);
+	goreSprite[0]->pivot = col->pivot;
 
 	bodySprite->ChangeAnim(ANISTATE::LOOP, 0.5f, false);
 
@@ -78,7 +84,15 @@ void Slime::Update()
 		col->Update();
 		bodySprite->Update();
 	}
-
+	else {
+		if (respawnTime < 0.0f) {
+			move = Vector2(0.0f, 0.0f);
+			Spawn(playerCol->GetWorldPos());
+			stat.hp = 24;
+			isDead = false;
+		}
+	}
+	playerCol->Update();
 }
 
 void Slime::Render()

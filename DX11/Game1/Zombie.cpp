@@ -3,7 +3,7 @@
 Zombie::Zombie(ObTileMap* _tileMap)
 {
 	stat.atk = 14;
-	stat.def = 6;
+	stat.def = 0;
 	stat.hp = 45;
 	stat.knockBack = 0.5f;
 
@@ -107,10 +107,14 @@ void Zombie::Update()
 		bodySprite->Update();
 	}
 	else {
-		for (int i = 0; i < 4; i++) {
-			if (goreSprite[i] != nullptr) goreSprite[i]->Update();
+		if (respawnTime < 0.0f) {
+			move = Vector2(0.0f, 0.0f);
+			Spawn(playerCol->GetWorldPos());
+			stat.hp = 45;
+			isDead = false;
 		}
 	}
+	playerCol->Update();
 }
 
 void Zombie::Render()
@@ -118,10 +122,5 @@ void Zombie::Render()
 	Character::Render();
 	if (!isDead) {
 		bodySprite->Render();
-	}
-	else {
-		for (int i = 0; i < 4; i++) {
-			if (goreSprite[i] != nullptr) goreSprite[i]->Render();
-		}
 	}
 }

@@ -14,6 +14,7 @@ Character::Character()
 		blockCol[i].isFilled = false;
 	}
 	invincibilityTime = 0.0f;
+	respawnTime = 0.0f;
 	isDead = false;
 }
 
@@ -45,6 +46,7 @@ void Character::Spawn(Vector2 playerPos)
 	Vector2 pos = playerPos;
 	pos.y += 500.0f;
 	int r = RANDOM->Int(0, 1);
+	int x = RANDOM->Int(0, 10);
 	if (r == 0) {
 		pos.x -= App.GetHalfWidth() + 100.0f;
 	}
@@ -202,6 +204,10 @@ void Character::Update()
 		}*/
 	}
 	else {
+		respawnTime -= DELTA;
+		for (int i = 0; i < 4; i++) {
+			if (goreSprite[i] != nullptr) goreSprite[i]->Update();
+		}
 		Dead();
 	}
 }
@@ -215,7 +221,7 @@ void Character::Render()
 {
 	if (isDead) {
 		for (int i = 0; i < 4; i++) {
-			if (goreSprite[i] != nullptr) goreSprite[i]->Update();
+			if (goreSprite[i] != nullptr) goreSprite[i]->Render();
 		}
 	}
 	/*for (int i = 0; i < 8; i++) {
@@ -227,12 +233,12 @@ void Character::Dead()
 {
 	for (int i = 0; i < 4; i++) {
 		move.y -= 100 * DELTA;
-		if (move.x > 0.0f) move + Vector2(i * 2.0f, 100 + (i * 75.0f));
-		else if (move.x > 0.0f) move + Vector2(i * -2.0f, 100 + (i * 75.0f));
 		if (goreSprite[i] != nullptr) {
-			goreSprite[i]->MoveWorldPos(move * DELTA);
+			Vector2 n;
+			if (move.x < 0.0f) n = Vector2(i * -50, 100 + i * 50);
+			else if (move.x > 0.0f) n = Vector2(i * 50, 100 + i * 50);
+			goreSprite[i]->MoveWorldPos((move + n)* DELTA);
 			goreSprite[i]->rotation += ToRadian * DELTA * 180;
-			goreSprite[i]->Update();
 		}
 	}
 }
@@ -250,11 +256,15 @@ void Character::Hit(Status enemyStat, Vector2 enemyCol)
 		if (stat.hp <= 0) {
 			for (int i = 0; i < 4; i++) {
 				move.y = 0.0f;
-				if (goreSprite[i] != nullptr) goreSprite[i]->SetWorldPos(col->GetWorldPos());
+				if (goreSprite[i] != nullptr) {
+					goreSprite[i]->SetWorldPos(col->GetWorldPos());
+					goreSprite[i]->rotation = 0.0f;
+				}
 			}
+			respawnTime = 7.0f;
 			isDead = true;
 		}
-		invincibilityTime = 0.66f;
+		invincibilityTime = 0.8f;
 		cout << stat.hp << '\n';
 	}
 }

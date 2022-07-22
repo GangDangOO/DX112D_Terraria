@@ -80,9 +80,14 @@ Player::Player(ObTileMap* _tileMap)
 	boss_Spawner->SetParentRT(*col);
 
 	for (int i = 0; i < 10; i++) {
+		colArrow[i] = new ObRect();
+		colArrow[i]->scale = Vector2(14.0f, 32.0f);
+		colArrow[i]->visible = false;
+		arrowPos[i] = Vector2(0.0f, 0.0f);
+
 		arrow[i] = new ObImage(L"Item_40.png");
 		arrow[i]->scale = Vector2(14.0f, 32.0f);
-		arrow[i]->SetParentRT(*col);
+		arrow[i]->SetParentRT(*colArrow[i]);
 		arrow[i]->visible = false;
 	}
 
@@ -95,6 +100,7 @@ Player::Player(ObTileMap* _tileMap)
 	jumpTime = 0.0f;
 	atkTime = 0.0f;
 	blockMiningTime = 0.0f;
+	isAtk = false;
 }
 
 Player::~Player()
@@ -209,6 +215,7 @@ bool Player::fall()
 bool Player::UseItem()
 {
 	ImGui::Text("%d", itemSlot);
+
 	bool isUse = false;
 	Int2 tileMousePos;
 	if (INPUT->KeyPress(VK_LBUTTON) && itemSlot != ITEM::NOT) {
@@ -266,7 +273,7 @@ bool Player::UseItem()
 				tileMousePos.y > 0 && tileMousePos.y < tileMap->GetTileSize().y) {
 				if (tileMap->GetTileState(tileMousePos) == TILE_WALL || map->GetType(tileMousePos) == TOUCH || map->GetType(tileMousePos) == FLOWER) {
 					blockMiningTime += DELTA;
-					if (blockMiningTime >= 0.5f) {
+					if (blockMiningTime >= 0.3f) {
 						blockMiningTime = 0.0f;
 						if (map->MiningBlock(tileMousePos)) {
 							Tilebuild tb;
@@ -290,20 +297,42 @@ bool Player::UseItem()
 			break;
 		case ITEM::SWORD:
 			if (atkTime < 0.0f) {
-				atkTime = 1.0f;
+				isAtk = true;
+				atkTime = 0.7f;
 				if (bodySprite->reverseLR) sword->SetWorldPos(col->GetWorldPos() + Vector2(20.0, bodySprite->scale.y * 0.6f));
 				else sword->SetWorldPos(col->GetWorldPos() + Vector2(-20.0, bodySprite->scale.y * 0.6f));
+				sword->rotation = 0.0f;
 				sword->visible = true;
 				stat.atk = 8;
 			}
 			break;
 		case ITEM::BOW:
 			if (atkTime < 0.0f) {
-				atkTime = 1.0f;
+				isAtk = true;
+				atkTime = 0.7f;
 				bodySprite->ChangeAnim(ANISTATE::STOP, 0.1f, false);
 				bodySprite->frame.y = 21;
 				bow->visible = true;
 				stat.atk = 5;
+				for (int i = 0; i < 10; i++) {
+					if (!arrow[i]->visible) {
+						colArrow[i]->SetWorldPos(col->GetWorldPos() + Vector2(0.0f, col->scale.y * 0.5f));
+						arrowPos[i] = col->GetWorldPos() - INPUT->GetMouseWorldPos();
+						arrowPos[i] *= -1;
+						if (arrowPos[i].x < 0.0f) {
+							bodySprite->reverseLR = false;
+							bow->reverseLR = true;
+							sword->reverseLR = true;
+						}
+						else {
+							bodySprite->reverseLR = true;
+							bow->reverseLR = false;
+							sword->reverseLR = false;
+						}
+						arrow[i]->visible = true;
+						break;
+					}
+				}
 			}
 			break;
 		case ITEM::MAGIC:
@@ -328,15 +357,31 @@ bool Player::UseItem()
 	}
 	if (sword->visible) {
 		if (!sword->reverseLR) {
-			sword->MoveWorldPos(Vector2(10 * DELTA, -20 * DELTA));
+			sword->MoveWorldPos(Vector2(5 * DELTA, -20 * DELTA));
+			sword->rotation -= ToRadian * 90 * DELTA;
 		}
 		else {
-			sword->MoveWorldPos(Vector2(-10 * DELTA, -20 * DELTA));
+			sword->MoveWorldPos(Vector2(-5 * DELTA, -20 * DELTA));
+			sword->rotation += ToRadian * 90 * DELTA;
 		}
 	}
 	if (atkTime < 0.0f) {
+		isAtk = false;
 		if (bow->visible) bow->visible = false;
 		if (sword->visible) sword->visible = false;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		if (arrow[i]->visible) {
+			arrowPos[i].y -= 150 * DELTA;
+			Vector2 n = arrowPos[i];
+			n.Normalize();
+			colArrow[i]->MoveWorldPos(n * 300 * DELTA);
+			arrow[i]->rotation = atan2(n.x, n.y * -1);
+			Int2 tilepos;
+			tileMap->WorldPosToTileIdx(colArrow[i]->GetWorldPos(), tilepos);
+			if (tileMap->GetTileState(tilepos) == TILE_WALL) arrow[i]->visible = false;
+		}
 	}
 
 	if (isUse && bodySprite->frame.y == 0) bodySprite->frame.y = 20;
@@ -364,9 +409,18 @@ void Player::Update()
 		bow->Update();
 		sword->Update();
 		colSword->Update();
-		for (int i = 0; i < 10; i++) {
-			arrow[i]->Update();
+	}
+	else {
+		if (respawnTime < 0.0f) {
+			move = Vector2(0.0f, 0.0f);
+			Spawn();
+			stat.hp = 100;
+			isDead = false;
 		}
+	}
+	for (int i = 0; i < 10; i++) {
+		arrow[i]->Update();
+		colArrow[i]->Update();
 	}
 }
 
@@ -378,15 +432,10 @@ void Player::Render()
 		bodySprite->Render();
 		bow->Render();
 		sword->Render();
-		for (int i = 0; i < 10; i++) {
-			arrow[i]->Render();
-		}
-	}
-	else {
-		for (int i = 0; i < 4; i++) {
-			goreSprite[i]->Render();
-		}
 	}
 	/*col->Render();*/
+	for (int i = 0; i < 10; i++) {
+		arrow[i]->Render();
+	}
 }
 

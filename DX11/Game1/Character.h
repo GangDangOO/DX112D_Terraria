@@ -27,6 +27,7 @@ class Character
 public:
 	float	invincibilityTime;
 	bool	isDead;
+	float	respawnTime;
 	Status	stat;
 	ObImage* bodySprite;
 	ObImage* goreSprite[4];
