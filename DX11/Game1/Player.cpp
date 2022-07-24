@@ -7,6 +7,8 @@ Player::Player(ObTileMap* _tileMap)
 	stat.hp = 100;
 	stat.knockBack = 0;
 
+	maxStat = stat;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"BestiaryGirl_Default.png");
@@ -40,6 +42,7 @@ Player::Player(ObTileMap* _tileMap)
 	pick->scale = Vector2(32.0f, 32.0f);
 	pick->SetParentRT(*col);
 	pick->visible = false;
+	pick->MoveWorldPos(Vector2(0.0f, bodySprite->scale.y * 0.4f));
 
 	dirt = new ObImage(L"Item_2.png");
 	dirt->scale = Vector2(16.0f, 16.0f);
@@ -83,6 +86,7 @@ Player::Player(ObTileMap* _tileMap)
 		colArrow[i] = new ObRect();
 		colArrow[i]->scale = Vector2(14.0f, 32.0f);
 		colArrow[i]->visible = false;
+		colArrow[i]->SetWorldPos(col->GetWorldPos());
 		arrowPos[i] = Vector2(0.0f, 0.0f);
 
 		arrow[i] = new ObImage(L"Item_40.png");
@@ -105,8 +109,21 @@ Player::Player(ObTileMap* _tileMap)
 
 Player::~Player()
 {
-	SafeDelete(bodySprite);
+	SafeDelete(map);
+	SafeDelete(mapLight);
+	SafeDelete(shadow);
+	SafeDelete(pick);
+	SafeDelete(dirt);
+	SafeDelete(rock);
+	SafeDelete(sword);
 	SafeDelete(colSword);
+	SafeDelete(touch);
+	SafeDelete(bow);
+	SafeDelete(boss_Spawner);
+	for (int i = 0; i < 10; i++) {
+		SafeDelete(arrow[i]);
+		SafeDelete(colArrow[i]);
+	}
 }
 
 void Player::Action()
@@ -122,6 +139,7 @@ void Player::Action()
 	else {
 		ChangeStat(ANIM::JUMP);
 	}
+	col->Update();
 }
 
 void Player::ChangeStat(ANIM stat)
@@ -160,6 +178,8 @@ bool Player::Run()
 			bodySprite->reverseLR = false;
 			bow->reverseLR = true;
 			sword->reverseLR = true;
+			pick->reverseLR = true;
+			boss_Spawner->reverseLR = false;
 		}
 	}
 	else if (move.x < 0.0f && invincibilityTime <= 0.1f) {
@@ -174,6 +194,8 @@ bool Player::Run()
 			bodySprite->reverseLR = true;
 			bow->reverseLR = false;
 			sword->reverseLR = false;
+			pick->reverseLR = false;
+			boss_Spawner->reverseLR = true;
 		}
 	}
 	else if (move.x > 0.0f && invincibilityTime <= 0.1f) {
@@ -199,11 +221,11 @@ bool Player::fall()
 	jumpTime -= DELTA;
 	if (dirCheck.up && move.y > 0.0f) move.y = 0.0f;
 	if (!dirCheck.down) isFall = true;
-	else if (jumpTime <= 0.0f && invincibilityTime <= 0.4f) {
+	else if (move.y != 0.0f && jumpTime <= 0.0f && invincibilityTime <= 0.4f) {
 		move.y = 0.0f;
 	}
 	if (isFall) {
-		move.y -= DELTA * 300.0f * GAMESIZE;
+		move.y -= DELTA * 350.0f * GAMESIZE;
 	}
 	else if (INPUT->KeyDown(VK_SPACE)) {
 		jumpTime = 0.2f;
@@ -269,6 +291,15 @@ bool Player::UseItem()
 			}
 			break;
 		case ITEM::PICK:
+			if (atkTime < 0.0f) {
+				isAtk = true;
+				atkTime = 0.3f;
+				if (bodySprite->reverseLR) pick->SetWorldPos(col->GetWorldPos() + Vector2(20.0, bodySprite->scale.y * 0.4f));
+				else pick->SetWorldPos(col->GetWorldPos() + Vector2(-20.0, bodySprite->scale.y * 0.4f));
+				pick->rotation = 0.0f;
+				pick->visible = true;
+				stat.atk = 3;
+			}
 			if (tileMousePos.x > 0 && tileMousePos.x < tileMap->GetTileSize().x &&
 				tileMousePos.y > 0 && tileMousePos.y < tileMap->GetTileSize().y) {
 				if (tileMap->GetTileState(tileMousePos) == TILE_WALL || map->GetType(tileMousePos) == TOUCH || map->GetType(tileMousePos) == FLOWER) {
@@ -303,19 +334,19 @@ bool Player::UseItem()
 				else sword->SetWorldPos(col->GetWorldPos() + Vector2(-20.0, bodySprite->scale.y * 0.6f));
 				sword->rotation = 0.0f;
 				sword->visible = true;
-				stat.atk = 8;
+				stat.atk = 22;
 			}
 			break;
 		case ITEM::BOW:
 			if (atkTime < 0.0f) {
-				isAtk = true;
-				atkTime = 0.7f;
-				bodySprite->ChangeAnim(ANISTATE::STOP, 0.1f, false);
-				bodySprite->frame.y = 21;
-				bow->visible = true;
-				stat.atk = 5;
 				for (int i = 0; i < 10; i++) {
 					if (!arrow[i]->visible) {
+						isAtk = true;
+						atkTime = 0.7f;
+						bodySprite->ChangeAnim(ANISTATE::STOP, 0.1f, false);
+						bodySprite->frame.y = 21;
+						bow->visible = true;
+						stat.atk = 15;
 						colArrow[i]->SetWorldPos(col->GetWorldPos() + Vector2(0.0f, col->scale.y * 0.5f));
 						arrowPos[i] = col->GetWorldPos() - INPUT->GetMouseWorldPos();
 						arrowPos[i] *= -1;
@@ -323,11 +354,15 @@ bool Player::UseItem()
 							bodySprite->reverseLR = false;
 							bow->reverseLR = true;
 							sword->reverseLR = true;
+							pick->reverseLR = true;
+							boss_Spawner->reverseLR = true;
 						}
 						else {
 							bodySprite->reverseLR = true;
 							bow->reverseLR = false;
 							sword->reverseLR = false;
+							pick->reverseLR = false;
+							boss_Spawner->reverseLR = false;
 						}
 						arrow[i]->visible = true;
 						break;
@@ -338,6 +373,16 @@ bool Player::UseItem()
 		case ITEM::MAGIC:
 			if (atkTime < 0.0f) {
 				atkTime = 1.0f;
+			}
+			break;
+		case ITEM::BOSS_CALL:
+			if (!boss_Spawner->visible && atkTime < 0.0f) {
+				isAtk = true;
+				atkTime = 0.7f;
+				bodySprite->ChangeAnim(ANISTATE::STOP, 0.1f, false);
+				bodySprite->frame.y = 21;
+				stat.atk = 5;
+				boss_Spawner->visible = true;
 			}
 			break;
 		default:
@@ -365,10 +410,30 @@ bool Player::UseItem()
 			sword->rotation += ToRadian * 90 * DELTA;
 		}
 	}
+	if (pick->visible) {
+		if (!pick->reverseLR) {
+			pick->MoveWorldPos(Vector2(5 * DELTA, -20 * DELTA));
+			pick->rotation -= ToRadian * 90 * DELTA;
+		}
+		else {
+			pick->MoveWorldPos(Vector2(-5 * DELTA, -20 * DELTA));
+			pick->rotation += ToRadian * 270 * DELTA;
+		}
+	}
+	if (boss_Spawner->visible) {
+		if (!boss_Spawner->reverseLR) {
+			boss_Spawner->SetWorldPos(Vector2(col->GetWorldPos().x - 20, col->GetWorldPos().y + col->scale.y * 0.8f));
+		}
+		else {
+			boss_Spawner->SetWorldPos(Vector2(col->GetWorldPos().x + 20, col->GetWorldPos().y + col->scale.y * 0.8f));
+		}
+	}
 	if (atkTime < 0.0f) {
 		isAtk = false;
 		if (bow->visible) bow->visible = false;
 		if (sword->visible) sword->visible = false;
+		if (pick->visible) pick->visible = false;
+		if (boss_Spawner->visible) boss_Spawner->visible = false;
 	}
 
 	for (int i = 0; i < 10; i++) {
@@ -396,6 +461,7 @@ void Player::ChangeSlot()
 	if (INPUT->KeyDown('4')) itemSlot = ITEM::SWORD;
 	if (INPUT->KeyDown('5')) itemSlot = ITEM::BOW;
 	if (INPUT->KeyDown('6')) itemSlot = ITEM::MAGIC;
+	if (INPUT->KeyDown('9')) itemSlot = ITEM::BOSS_CALL;
 	if (INPUT->KeyDown('0')) itemSlot = ITEM::NOT;
 }
 
@@ -404,18 +470,15 @@ void Player::Update()
 	Character::Update();
 	if (!isDead) {
 		Action();
-		col->Update();
-		bodySprite->Update();
 		bow->Update();
 		sword->Update();
 		colSword->Update();
+		pick->Update();
+		boss_Spawner->Update();
 	}
 	else {
 		if (respawnTime < 0.0f) {
-			move = Vector2(0.0f, 0.0f);
 			Spawn();
-			stat.hp = 100;
-			isDead = false;
 		}
 	}
 	for (int i = 0; i < 10; i++) {
@@ -429,9 +492,10 @@ void Player::Render()
 {
 	Character::Render();
 	if (!isDead) {
-		bodySprite->Render();
 		bow->Render();
 		sword->Render();
+		pick->Render();
+		boss_Spawner->Render();
 	}
 	/*col->Render();*/
 	for (int i = 0; i < 10; i++) {

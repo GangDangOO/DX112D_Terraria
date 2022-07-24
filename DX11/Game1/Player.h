@@ -15,7 +15,8 @@ enum class ITEM {
 	PICK,
 	SWORD,
 	BOW,
-	MAGIC
+	MAGIC,
+	BOSS_CALL
 };
 class Player : public Character
 {

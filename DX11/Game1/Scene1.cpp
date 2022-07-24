@@ -101,6 +101,11 @@ void Scene1::Init()
 		zombie[i]->col->scale *= GAMESIZE;
 		zombie[i]->Spawn(player->col->GetWorldPos() + Vector2(i * 20, 0.0f));
 	}
+	boss = new Boss(block);
+	boss->playerCol = player->col;
+	boss->bodySprite->scale *= GAMESIZE;
+	boss->col->scale *= GAMESIZE;
+	boss->isDead = true;
 
 	CAM->position = player->col->GetWorldPos();
 }
@@ -117,6 +122,7 @@ void Scene1::Release()
 		SafeDelete(slime[i]);
 		SafeDelete(zombie[i]);
 	}
+	SafeDelete(boss);
 }
 
 void Scene1::Update()
@@ -157,22 +163,38 @@ void Scene1::Update()
 			zombie[i]->Hit(player->stat, player->col->GetWorldPos());
 		}
 	}
+	if (!boss->isDead && boss->col->Intersect(player->col)) {
+		player->Hit(boss->stat, boss->col->GetWorldPos());
+	}
+	if (!boss->isDead && player->isAtk && player->colSword->Intersect(boss->col)) {
+		boss->Hit(player->stat, player->col->GetWorldPos());
+	}
 	for (int i = 0; i < 10; i++) {
 		if (player->arrow[i]->visible) {
+			if (!boss->isDead && player->colArrow[i]->Intersect(boss->col)) {
+				boss->Hit(player->stat, player->colArrow[i]->GetWorldPos());
+				player->arrow[i]->visible = false;
+				player->arrowPos[i] = Vector2(0.0f, 0.0f);
+			}
 			for (int j = 0; j < 5; j++) {
 				if (!slime[j]->isDead && player->colArrow[i]->Intersect(slime[j]->col)) {
 					slime[j]->Hit(player->stat, player->colArrow[i]->GetWorldPos());
-					player->arrowPos[i] = Vector2(0.0f, 0.0f);
 					player->arrow[i]->visible = false;
+					player->arrowPos[i] = Vector2(0.0f, 0.0f);
 				}
 				if (!zombie[j]->isDead && player->colArrow[i]->Intersect(zombie[j]->col)) {
 					zombie[j]->Hit(player->stat, player->colArrow[i]->GetWorldPos());
-					player->arrowPos[i] = Vector2(0.0f, 0.0f);
 					player->arrow[i]->visible = false;
+					player->arrowPos[i] = Vector2(0.0f, 0.0f);
 				}
 			}
 		}
 	}
+
+	if (player->itemSlot == ITEM::BOSS_CALL && INPUT->KeyDown(VK_LBUTTON) && boss->isDead) {
+		boss->Spawn(player->col->GetWorldPos());
+	}
+
 	bg->Update();
 	wall->Update();
 	block->Update();
@@ -182,6 +204,7 @@ void Scene1::Update()
 		slime[i]->Update();
 		zombie[i]->Update();
 	}
+	boss->Update();
 	shadow->Update();
 }
 
@@ -201,6 +224,7 @@ void Scene1::Render()
 		slime[i]->Render();
 		zombie[i]->Render();
 	}
+	boss->Render();
 	shadow->Render();
 }
 

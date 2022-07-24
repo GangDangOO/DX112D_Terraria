@@ -7,6 +7,8 @@ Slime::Slime(ObTileMap* _tileMap)
 	stat.hp = 24;
 	stat.knockBack = -0.2f;
 
+	maxStat = stat;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"NPC_1.png");
@@ -26,11 +28,12 @@ Slime::Slime(ObTileMap* _tileMap)
 
 	move = Vector2(0.0f, 0.0f);
 	atkTime = 0.5f;
+	coolTime = RANDOM->Float(2.5f, 4.0f);
 }
 
 Slime::~Slime()
 {
-	SafeDelete(bodySprite);
+	SafeDelete(playerCol);
 }
 
 bool Slime::Fall()
@@ -70,26 +73,21 @@ void Slime::Update()
 		atkTime += DELTA;
 
 		Fall();
-		if (atkTime >= 3.0f) {
+		if (atkTime >= coolTime) {
+			coolTime = RANDOM->Float(2.5f, 4.0f);
 			atkTime = 0.0f;
 			bodySprite->aniInterval = 0.5f;
 			Jump();
 		}
-		else if (atkTime >= 2.7f)
+		else if (atkTime >= coolTime * 0.9f)
 			bodySprite->aniInterval = 0.05f;
 		else
 			bodySprite->aniInterval = 0.5f;
 		col->MoveWorldPos(move * DELTA);
-
-		col->Update();
-		bodySprite->Update();
 	}
 	else {
 		if (respawnTime < 0.0f) {
-			move = Vector2(0.0f, 0.0f);
 			Spawn(playerCol->GetWorldPos());
-			stat.hp = 24;
-			isDead = false;
 		}
 	}
 	playerCol->Update();
@@ -98,5 +96,4 @@ void Slime::Update()
 void Slime::Render()
 {
 	Character::Render();
-	if (!isDead) bodySprite->Render();
 }

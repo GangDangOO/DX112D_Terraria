@@ -29,6 +29,7 @@ public:
 	bool	isDead;
 	float	respawnTime;
 	Status	stat;
+	Status	maxStat;
 	ObImage* bodySprite;
 	ObImage* goreSprite[4];
 	ObRect*	col;

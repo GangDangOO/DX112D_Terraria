@@ -20,7 +20,12 @@ Character::Character()
 
 Character::~Character()
 {
+	SafeDelete(bodySprite);
+	for (int i = 0; i < 4; i++) {
+		SafeDelete(goreSprite[i]);
+	}
 	SafeDelete(col);
+	SafeDelete(tileMap);
 }
 
 void Character::Spawn()
@@ -36,6 +41,9 @@ void Character::Spawn()
 			pos *= -1;
 			pos.y += tileMap->scale.y + 1;
 			col->SetWorldPos(pos);
+			stat = maxStat;
+			move = Vector2(0.0f, 0.0f);
+			isDead = false;
 			break;
 		}
 	}
@@ -63,6 +71,9 @@ void Character::Spawn(Vector2 playerPos)
 			pos *= -1;
 			pos.y += tileMap->scale.y + 1;
 			col->SetWorldPos(pos);
+			stat = maxStat;
+			move = Vector2(0.0f, 0.0f);
+			isDead = false;
 			break;
 		}
 	}
@@ -202,6 +213,8 @@ void Character::Update()
 		/*for (int i = 0; i < 8; i++) {
 			blockCol[i].Update();
 		}*/
+		bodySprite->Update();
+		col->Update();
 	}
 	else {
 		respawnTime -= DELTA;
@@ -219,7 +232,10 @@ void Character::LateUpdate()
 
 void Character::Render()
 {
-	if (isDead) {
+	if (!isDead) {
+		bodySprite->Render();
+	}
+	else {
 		for (int i = 0; i < 4; i++) {
 			if (goreSprite[i] != nullptr) goreSprite[i]->Render();
 		}

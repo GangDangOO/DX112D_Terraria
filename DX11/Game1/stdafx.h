@@ -15,5 +15,6 @@
 #include "Player.h"
 #include "Slime.h"
 #include "Zombie.h"
+#include "Boss.h"
 
 #include "Scene1.h"

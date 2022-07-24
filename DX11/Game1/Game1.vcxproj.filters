@@ -35,6 +35,9 @@
     <ClInclude Include="Zombie.h">
       <Filter>GamObject\Character</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>GamObject\Character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -68,6 +71,9 @@
       <Filter>GamObject\Character</Filter>
     </ClCompile>
     <ClCompile Include="Zombie.cpp">
+      <Filter>GamObject\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
       <Filter>GamObject\Character</Filter>
     </ClCompile>
   </ItemGroup>

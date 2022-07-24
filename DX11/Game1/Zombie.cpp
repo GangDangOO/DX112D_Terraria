@@ -7,6 +7,8 @@ Zombie::Zombie(ObTileMap* _tileMap)
 	stat.hp = 45;
 	stat.knockBack = 0.5f;
 
+	maxStat = stat;
+
 	tileMap = _tileMap;
 
 	bodySprite = new ObImage(L"NPC_3.png");
@@ -39,7 +41,7 @@ Zombie::Zombie(ObTileMap* _tileMap)
 
 Zombie::~Zombie()
 {
-	SafeDelete(bodySprite);
+	SafeDelete(playerCol);
 }
 
 bool Zombie::Fall()
@@ -103,15 +105,10 @@ void Zombie::Update()
 			move.x = 0.0f;
 		}
 		col->MoveWorldPos(move * DELTA);
-		col->Update();
-		bodySprite->Update();
 	}
 	else {
 		if (respawnTime < 0.0f) {
-			move = Vector2(0.0f, 0.0f);
 			Spawn(playerCol->GetWorldPos());
-			stat.hp = 45;
-			isDead = false;
 		}
 	}
 	playerCol->Update();
@@ -120,7 +117,4 @@ void Zombie::Update()
 void Zombie::Render()
 {
 	Character::Render();
-	if (!isDead) {
-		bodySprite->Render();
-	}
 }

@@ -14,6 +14,7 @@ private:
 	Player* player;
 	Slime* slime[5];
 	Zombie* zombie[5];
+	Boss* boss;
 	bool camMod;
 public:
 	Scene1();

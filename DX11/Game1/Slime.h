@@ -4,6 +4,7 @@ class Slime : public Character
 public:
 	ObRect* playerCol;
 	float atkTime;
+	float coolTime;
 	Slime(ObTileMap* _tileMap);
 	~Slime();
 
