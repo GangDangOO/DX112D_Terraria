@@ -27,7 +27,7 @@ class Character
 public:
 	float	invincibilityTime;
 	bool	isDead;
-	float	respawnTime;
+	float	respawnTime, planeY, planeLX, planeRX;
 	Status	stat;
 	Status	maxStat;
 	ObImage* bodySprite;
@@ -37,6 +37,7 @@ public:
 	ObTileMap* tileMap;
 	bool isCheckBlock[8];
 	ObRect blockCol[8];
+	bool	colView;
 	Bool4 dirCheck;
 	Vector2 move;
 	Character();

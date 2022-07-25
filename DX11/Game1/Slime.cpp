@@ -44,7 +44,11 @@ bool Slime::Fall()
 	if (isFall) {
 		atkTime = 0.0f;
 		move.y -= 300 * DELTA * GAMESIZE;
-	}else if (move.y < 0.0f) move = Vector2(0.0f, 0.0f);
+	}
+	else if (move.y < 0.0f) {
+		col->SetWorldPosY(planeY);
+		move = Vector2(0.0f, 0.0f);
+	}
 	return isFall;
 }
 
@@ -91,6 +95,7 @@ void Slime::Update()
 		}
 	}
 	playerCol->Update();
+	col->Update();
 }
 
 void Slime::Render()

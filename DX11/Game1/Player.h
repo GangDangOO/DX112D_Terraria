@@ -32,7 +32,7 @@ public:
 	bool** isWall;
 	ITEM	itemSlot;
 	ANIM anim;
-
+	bool* camMod;
 	ObImage* pick;
 	ObImage* dirt;
 	ObImage* rock;

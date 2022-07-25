@@ -15,9 +15,9 @@ Boss::Boss(ObTileMap* _tileMap)
 	bodySprite->scale = Vector2(110.0f, 986.0f / 6);
 	bodySprite->maxFrame = Int2(1, 6);
 	col->scale = bodySprite->scale - Vector2(-40.0f, 20.0f);
-	bodySprite->SetParentRT(*col);
 	col->pivot = OFFSET_N;
-	bodySprite->pivot = col->pivot;
+	bodySprite->pivot = OFFSET_N;
+	bodySprite->SetParentRT(*col);
 
 
 	bodySprite->ChangeAnim(ANISTATE::LOOP, 0.5f, false);
@@ -56,7 +56,7 @@ void Boss::Move()
 {
 	move = playerCol->GetWorldPos() - col->GetWorldPos();
 	look = move;
-	move.y += 75.0f;
+	move.y += 200.0f;
 	move.Normalize();
 	if (!isPhase) {
 		move *= 100;
@@ -76,7 +76,7 @@ void Boss::Dash()
 		move *= 220;
 	}
 	else {
-		move *= 450;
+		move *= 800;
 	}
 	bodySprite->rotation = atan2(look.x, look.y * -1);
 }
@@ -98,11 +98,29 @@ void Boss::Update()
 		else if (isPhase && stat.hp >= maxStat.hp * 0.3f) {
 			isPhase = false;
 		}
-
-		if (atkN == 3) {
-			dashTime = 0.0f;
-			isAtk = false;
-			atkN = 0;
+		if (!isPhase) {
+			if (atkN == 3) {
+				dashTime = 0.0f;
+				isAtk = false;
+				atkN = 0;
+			}
+			if (phaseTime > 3.0f) {
+				phaseTime = 0.0f;
+				atkN++;
+				Dash();
+			}
+		}
+		else {
+			if (atkN == 8) {
+				dashTime = 0.0f;
+				isAtk = false;
+				atkN = 0;
+			}
+			if (phaseTime > 0.8f) {
+				phaseTime = 0.0f;
+				atkN++;
+				Dash();
+			}
 		}
 
 		if (dashTime > 15.0f) {
@@ -113,11 +131,6 @@ void Boss::Update()
 			dashTime += DELTA;
 		}
 
-		if (phaseTime > 3.0f) {
-			phaseTime = 0.0f;
-			atkN++;
-			Dash();
-		}
 		if (!isAtk) {
 			Move();
 		}

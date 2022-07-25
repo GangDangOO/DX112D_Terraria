@@ -52,7 +52,10 @@ bool Zombie::Fall()
 	if (isFall) {
 		move.y -= 300 * DELTA * GAMESIZE;
 	}
-	else if (jumpTime <= 0.0f) move.y = 0.0f;
+	else if (move.y != 0.0f && jumpTime <= 0.0f) {
+		col->SetWorldPosY(planeY);
+		move.y = 0.0f;
+	}
 	return isFall;
 }
 
@@ -112,6 +115,7 @@ void Zombie::Update()
 		}
 	}
 	playerCol->Update();
+	col->Update();
 }
 
 void Zombie::Render()

@@ -108,6 +108,9 @@ void Scene1::Init()
 	boss->isDead = true;
 
 	CAM->position = player->col->GetWorldPos();
+
+	shadowMod = false;
+	player->camMod = &camMod;
 }
 
 void Scene1::Release()
@@ -129,6 +132,7 @@ void Scene1::Update()
 {
 	// ImGui::Text("FPS: %d", TIMER->GetFramePerSecond());
 
+	if (INPUT->KeyDown('V')) shadowMod = !shadowMod;
 	// 카메라 움직임
 	if (INPUT->KeyDown('C')) camMod = !camMod;
 	if (camMod) {
@@ -199,7 +203,7 @@ void Scene1::Update()
 	wall->Update();
 	block->Update();
 	map->Update();
-	if (!camMod) player->Update();
+	player->Update();
 	for (int i = 0; i < 5; i++) {
 		slime[i]->Update();
 		zombie[i]->Update();
@@ -216,7 +220,7 @@ void Scene1::LateUpdate()
 void Scene1::Render()
 {
 	bg->Render();
-	wall->Render();
+	if (!shadowMod) wall->Render();
 	block->Render();
 	map->Render();
 	player->Render();
@@ -225,7 +229,7 @@ void Scene1::Render()
 		zombie[i]->Render();
 	}
 	boss->Render();
-	shadow->Render();
+	if(!shadowMod) shadow->Render();
 }
 
 void Scene1::ResizeScreen()

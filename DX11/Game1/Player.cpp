@@ -5,7 +5,7 @@ Player::Player(ObTileMap* _tileMap)
 	stat.atk = 0;
 	stat.def = 0;
 	stat.hp = 100;
-	stat.knockBack = 0;
+	stat.knockBack = -0.5;
 
 	maxStat = stat;
 
@@ -124,6 +124,7 @@ Player::~Player()
 		SafeDelete(arrow[i]);
 		SafeDelete(colArrow[i]);
 	}
+	SafeDelete(camMod);
 }
 
 void Player::Action()
@@ -169,48 +170,52 @@ void Player::ChangeStat(ANIM stat)
 bool Player::Run()
 {
 	bool isMove = false;
-	if (INPUT->KeyPress('A') && !dirCheck.left) {
-		ChangeStat(ANIM::MOVE);
-		move.x -= playerBoostSpeed * DELTA;
-		isMove = true;
+	if (!*camMod) {
+		if (INPUT->KeyPress('A') && !dirCheck.left) {
+			ChangeStat(ANIM::MOVE);
+			move.x -= playerBoostSpeed * DELTA;
+			isMove = true;
 
-		if (atkTime < 0.0f) {
-			bodySprite->reverseLR = false;
-			bow->reverseLR = true;
-			sword->reverseLR = true;
-			pick->reverseLR = true;
-			boss_Spawner->reverseLR = false;
+			if (atkTime < 0.0f) {
+				bodySprite->reverseLR = false;
+				bow->reverseLR = true;
+				sword->reverseLR = true;
+				pick->reverseLR = true;
+				boss_Spawner->reverseLR = false;
+			}
 		}
-	}
-	else if (move.x < 0.0f && invincibilityTime <= 0.1f) {
-		move.x = 0.0f;
-	}
-	else if (INPUT->KeyPress('D') && !dirCheck.right) {
-		ChangeStat(ANIM::MOVE);
-		move.x += playerBoostSpeed * DELTA;
-		isMove = true;
+		else if (move.x < 0.0f && invincibilityTime <= 0.1f) {
+			move.x = 0.0f;
+		}
+		else if (INPUT->KeyPress('D') && !dirCheck.right) {
+			ChangeStat(ANIM::MOVE);
+			move.x += playerBoostSpeed * DELTA;
+			isMove = true;
 
-		if (atkTime < 0.0f) {
-			bodySprite->reverseLR = true;
-			bow->reverseLR = false;
-			sword->reverseLR = false;
-			pick->reverseLR = false;
-			boss_Spawner->reverseLR = true;
+			if (atkTime < 0.0f) {
+				bodySprite->reverseLR = true;
+				bow->reverseLR = false;
+				sword->reverseLR = false;
+				pick->reverseLR = false;
+				boss_Spawner->reverseLR = true;
+			}
 		}
-	}
-	else if (move.x > 0.0f && invincibilityTime <= 0.1f) {
-		move.x = 0.0f;
+		else if (move.x > 0.0f && invincibilityTime <= 0.1f) {
+			move.x = 0.0f;
+		}
+		else {
+			if (move.x > DELTA * playerBoostSpeed) move.x -= DELTA * playerBoostSpeed;
+			else if (move.x < -DELTA * playerBoostSpeed) move.x += DELTA * playerBoostSpeed;
+			else move.x = 0.0f;
+		}
+		if (move.x > playerMaxSpeed) move.x = playerMaxSpeed;
+		else if (move.x < -playerMaxSpeed) move.x = -playerMaxSpeed;
+		col->MoveWorldPos(move * DELTA);
+		if (bodySprite->frame.y == 13) bodySprite->frame.y = 2;
 	}
 	else {
-		if (move.x > DELTA * playerBoostSpeed) move.x -= DELTA * playerBoostSpeed;
-		else if (move.x < -DELTA * playerBoostSpeed) move.x += DELTA * playerBoostSpeed;
-		else move.x = 0.0f;
+		ChangeStat(ANIM::IDLE);
 	}
-	if (move.x > playerMaxSpeed) move.x = playerMaxSpeed;
-	else if (move.x < -playerMaxSpeed) move.x = -playerMaxSpeed;
-	col->MoveWorldPos(move * DELTA);
-	if (bodySprite->frame.y == 13) bodySprite->frame.y = 2;
-
 	return isMove;
 }
 
@@ -222,10 +227,11 @@ bool Player::fall()
 	if (dirCheck.up && move.y > 0.0f) move.y = 0.0f;
 	if (!dirCheck.down) isFall = true;
 	else if (move.y != 0.0f && jumpTime <= 0.0f && invincibilityTime <= 0.4f) {
+		col->SetWorldPosY(planeY);
 		move.y = 0.0f;
 	}
 	if (isFall) {
-		move.y -= DELTA * 350.0f * GAMESIZE;
+		move.y -= DELTA * 300.0f * GAMESIZE;
 	}
 	else if (INPUT->KeyDown(VK_SPACE)) {
 		jumpTime = 0.2f;

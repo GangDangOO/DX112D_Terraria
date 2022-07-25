@@ -16,6 +16,7 @@ private:
 	Zombie* zombie[5];
 	Boss* boss;
 	bool camMod;
+	bool shadowMod;
 public:
 	Scene1();
 	~Scene1();
