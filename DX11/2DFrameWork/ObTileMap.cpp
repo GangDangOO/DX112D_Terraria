@@ -46,6 +46,8 @@ ObTileMap::ObTileMap()
     tileImages[5]->maxFrame = Int2(3, 1);
     tileImages[6] = new ObImage(L"Shadow.png");
     tileImages[6]->maxFrame = Int2(1, 1);
+    tileImages[7] = new ObImage(L"Tiles_19.png");
+    tileImages[7]->maxFrame = Int2(3, 1);
 
     //¼¼·Î
     for (int i = 0; i < tileSize.y; i++)

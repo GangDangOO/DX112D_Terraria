@@ -1,5 +1,5 @@
 #pragma once
-#define imageIdx 7
+#define imageIdx 8
 class Tile
 {
 public:
